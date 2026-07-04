@@ -3,10 +3,11 @@ const app = express();
 const port = 3000;
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
+const methodOverride = require("method-override");
+
 
 const path = require("path");
-
-
+app.use(methodOverride("_method"));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -38,19 +39,51 @@ app.get("/listing/new",(req,res)=>{
 
 app.post("/listings",async(req,res)=>{
   let listing=req.body.listing;
-  console.log(listing);
+  // console.log(listing);
   const list=new Listing(listing);
-  console.log(list);
+  // console.log(list);
   await list.save();
 })
+
+
+//*update route- will update the info of hotel which is listed 
+app.get("/listing/edit/:id",async(req,res)=>{
+  let{id}=req.params;
+  // console.log(id);
+
+  let listing=await Listing.findById(id);
+  // console.log(Hoteldata);
+  res.render("listings/edit",{listing})
+
+})
+
+app.patch("/listings/:id", async (req, res) => {
+    const {id} = req.params;
+    await Listing.findByIdAndUpdate(id, req.body.listing);
+    res.redirect(`/listing/${id}`);
+});
+
+//*delete route- will delete the info of hotel which is listed 
+
+app.delete("/listings/:id", async (req, res) => {
+    const {id} = req.params;
+    await Listing.findByIdAndDelete(id)
+    .then((res)=>{
+      console.log("deleted the listing")
+    })
+    res.redirect("/listing");
+});
+
+
 //*  detailed info of each hotel
 app.get("/listing/:id", async (req, res) => {
   let { id } = req.params;
-  console.log(id);
+  // console.log(id);
   const listedgData = await Listing.findById(id);
-  console.log(listedgData);
+  // console.log(listedgData);
   res.render("listings/show", { listedgData });
 });
+
 
 
 
