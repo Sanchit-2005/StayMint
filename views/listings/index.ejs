@@ -6,7 +6,11 @@
     <title>All listings </title>
 </head>
 <body>
+   
     <h1>List of hotels</h1>
+     <form method="GET" action="/listing/new">
+        <button>Add new Listing</button>
+    </form>
     <ul>
         <%for(let list of listingInfo) {%>
         <li><a href="/listing/<%= list._id %>"><%= list.title %></a></li>

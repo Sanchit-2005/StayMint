@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hotel</title>
+</head>
+<body>
+  <form action="/listings" method="POST">
+    <h2>Add hotel</h2>
+    <input type="text" name="listing[title]" placeholder=" Enter Hotel name">
+    <br> <br>
+     <input type="text" name="listing[description]" placeholder="write about the hotel">
+     <br> <br>
+     <input type="text" name="listing[image]" placeholder="image link of hotel">
+     <br> <br>
+     <input type="number" name="listing[price]" placeholder="price of room ">
+     <br> <br>
+      <input type="text" name="listing[location]" placeholder="location of hotel">
+     <br> <br>
+      <input type="text" name="listing[country]" placeholder="country ">
+     <br> <br>
+     
+     <button> Sumbit </button>
+  </form>
+</body>
+</html>
