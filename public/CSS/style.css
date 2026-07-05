@@ -23,7 +23,7 @@ main {
 
 
 .navbar{
-    height: 5rem;
+    height: 12rem;
     background-color: white;
 }
 .fa-files-pinwheel{
@@ -82,11 +82,11 @@ main {
         margin-bottom: 2rem !important;
     }
 
-    .card-img-top{
+    .card-listing .card-img-top{
         border-radius: 1rem !important;
         width: 100% !important;
     }
-        .card-img-top:hover{
+        .card-listing .card-img-top:hover{
             background-color: white;
             opacity: 0.2;
         }
@@ -103,3 +103,16 @@ main {
     .listing-link{
         text-decoration: none;
     }
+
+
+    /* show route styling */
+     .show-hotel .card-img-top{
+        height: 40vh;
+        object-fit: cover;
+         border-radius: 1rem !important;
+     }
+.show-hotel{
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 1rem;
+}

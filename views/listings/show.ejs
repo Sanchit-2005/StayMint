@@ -1,46 +1,74 @@
 <% layout("/layout/boilerplate") -%>
 
-
 <body>
-    <h2>Hotel details </h2>
-    <img src="<%=listedgData.image.url%>" alt="">
-    <ul>
-        <li><%=listedgData.title%></li>
-        <li><%=listedgData.description %></li>
-      <li>&#8377;<%= listedgData.price.toLocaleString("en-IN") %></li>
-        <li><%=listedgData.location %></li>
-        <li><%=listedgData.country %></li>
-    </ul>
-    <form action="/listing/edit/<%=listedgData.id%>" method="GET">
-        <button type="submit">Edit</button>
-    </form>
-  <br>
-     <form id="delete-form" action="/listings/<%=listedgData.id%>?_method=DELETE" method="POST">
-         
-        <button type="submit">Delete this listing</button>
-    </form>
+    
 
-      <script>
-        const deleteForm = document.getElementById("delete-form");
 
-        deleteForm.addEventListener("submit", function (e) {
-            e.preventDefault();
+  <div class="row mb-3">
+    <div class="col-8 offset-2">
+         <h2 class="offset-1">Hotel details</h2> 
+      <div class="card show-hotel col-8 offset-2">
+        <img
+          src="<%=listedgData.image.url%>"
+          class="card-img-top show-img"
+          alt="..."
+        />
+        <div class="card-body">
+          <p class="card-text">
+            <b><%=listedgData.title%></b>
+            <br />
+            <br>
+            <%=listedgData.description %>
+            <br />
+            <br>
+            &#8377;<%= listedgData.price.toLocaleString("en-IN") %>
+            <br />
+            <%=listedgData.location %>
+            <br />
+            <%=listedgData.country %>
+          </p>
+        </div>
+      </div>
 
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to recover this listing!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Yes, delete it!"
-            })
-            
-            .then((result) => {
-                if (result.isConfirmed) {
-                    deleteForm.submit();
-                }
-            });
+      <div class="btns mb-3">
+        <form action="/listing/edit/<%=listedgData.id%>" method="GET">
+          <button type="submit" class="btn btn-success  offset-2">Edit</button>
+        </form>
+        <br />
+        <form
+          id="delete-form"
+          action="/listings/<%=listedgData.id%>?_method=DELETE"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-danger offset-2">
+            Delete this listing
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const deleteForm = document.getElementById("delete-form");
+
+    deleteForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to recover this listing!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      })
+
+        .then((result) => {
+          if (result.isConfirmed) {
+            deleteForm.submit();
+          }
         });
-    </script>
+    });
+  </script>
 </body>
