@@ -53,6 +53,7 @@ app.post("/listings",async(req,res)=>{
   const list=new Listing(listing);
   // console.log(list);
   await list.save();
+  res.redirect("/listing")
 })
 
 
