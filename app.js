@@ -4,14 +4,19 @@ const port = 3000;
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 const methodOverride = require("method-override");
-
-
+const ejsMate = require("ejs-mate");
 const path = require("path");
+
+
+
+
 app.use(methodOverride("_method"));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
+app.engine('ejs',ejsMate);
+app.use(express.static(path.join(__dirname, "public")));
 
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/STAYMINT");
@@ -22,6 +27,11 @@ main()
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
+  });
+
+
+  app.get("/",(req,res)=>{
+    res.send("Welcome to hote route")
   });
 
 //*listing all hotels

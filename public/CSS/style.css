@@ -1,0 +1,16 @@
+body{
+    background-color: aqua;
+}
+
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+.fa-files-pinwheel{
+    color:#1B4EF5;
+    font-size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+    font-weight: 600 !important;
+}
