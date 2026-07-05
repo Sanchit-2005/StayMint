@@ -1,16 +1,34 @@
 <% layout("/layout/boilerplate") -%>
 <body>
-   
-    <h1>List of hotels</h1>
-     <!-- <form method="GET" action="/listing/new">
-        <button>Add new Listing</button>
-    </form> -->
-    <ul>
-        <%for(let list of listingInfo) {%>
-        <li><a href="/listing/<%= list._id %>"><%= list.title %></a></li>
-        
+  <h1>List of hotels</h1>
+  <br />
+  <br />
+  <div
+    class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 row-cols-xsm-1 g-4"
+    id="box"
+  >
+    <%for(let list of listingInfo) {%>
+    <a href="/listing/<%=list._id%>" class="listing-link">
+      <div class="card col">
+        <img
+          src="<%= list.image.url %>"
+          class="card-img-top"
+          alt="listing_image"
+          style="height: 20rem; object-fit: cover"
+        />
+        <div class="card-body">
+          <p class="card-text">
+            <b><%= list.title %> </b>
+            <br />
+            &#8377;<%= list.price.toLocaleString("en-IN") %>/night
+          </p>
+        </div>
+      </div>
+    </a>
+
+    <br />
+    <br />
+    <br />
     <% } %>
-    </ul>
-    
-    
+  </div>
 </body>
