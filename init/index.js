@@ -14,7 +14,7 @@ main()
   });
 
   const initDB=async()=>{
-    // await Listing.deleteMany({});
+    await Listing.deleteMany({});
     await Listing.insertMany(Info.data);
   }
   initDB();

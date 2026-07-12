@@ -5,7 +5,7 @@
   <h2>Edit hotel</h2>
   <div class="row">
     <div class="col-8 offset-2">
-      <form action="/listings/<%= listing._id %>?_method=PATCH" method="POST">
+      <form action="/listings/<%= listing._id %>?_method=PATCH" method="POST" novalidate class="needs-validation">
         <div class="mb-3">
           <label for="title" class="form-label">title</label>
           <input
@@ -14,15 +14,25 @@
             name="listing[title]"
             value="<%=listing.title%>"
             id="title"
+            required
           />
+          <div class="invalid-feedback">
+        Please enter the valid  hotel name
+      </div>
         </div>
 
-        <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <textarea name="listing[description]" class="form-control">
-                        <%=listing.description%>
-         </textarea>
-        </div>
+       <div class="mb-3">
+  <label for="description" class="form-label">Description</label>
+
+  <textarea
+    name="listing[description]"
+    class="form-control"
+    required><%= listing.description %></textarea>
+
+  <div class="invalid-feedback">
+    Please enter the short description.
+  </div>
+</div>
 
         <div class="mb-3">
           <label for="image" class="form-label">image</label>
@@ -31,7 +41,11 @@
             name="listing[image][url]"
             value="<%=listing.image.url%>"
             class="form-control"
+            required
           />
+           <div class="invalid-feedback">
+        Please add  the valid image url
+       </div>
         </div>
         <div class="row">
           <div class="mb-3 col-md-4">
@@ -41,7 +55,11 @@
               name="listing[price]"
               value="<%=listing.price  %>"
               class="form-control"
+              required
             />
+            <div class="invalid-feedback">
+        enter the valid price
+      </div>
           </div>
 
           <div class="mb-3 col-md-8">
@@ -51,7 +69,11 @@
               name="listing[location]"
               value="<%=listing.location%>"
               class="form-control"
+              required
             />
+             <div class="invalid-feedback">
+        Please enter the valid  location
+      </div>
           </div>
         </div>
 
@@ -62,7 +84,11 @@
             name="listing[country]"
             value="<%=listing.country%>"
             class="form-control"
+            required
           />
+           <div class="invalid-feedback">
+        Please enter the valid  country
+      </div>
         </div>
 
         <br />
@@ -72,4 +98,5 @@
       </form>
     </div>
   </div>
+   <script src="/js/script.js"></script>
 </body>
