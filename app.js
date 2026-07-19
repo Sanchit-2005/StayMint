@@ -8,7 +8,8 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/expressError.js");
-const schema=require("./JoiSchema.js");
+const { schema: listingSchema, reviewJoiSchema } = require("./JoiSchema.js");
+const Review = require("./models/review");
 
 app.use(methodOverride("_method"));
 app.use(express.json());
@@ -29,25 +30,37 @@ main()
     console.error("Error connecting to MongoDB:", err);
   });
 
-  const validateListing=((req,res,next)=>{
-    let {error}=schema.validate(req.body);
-    if(error){
-      let errMsg = error.details.map((el) => el.message).join(", ");
-      throw new ExpressError(400,errMsg);
-    }
-    next();
-  });
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(", ");
+    throw new ExpressError(400, errMsg);
+  }
+  next();
+};
+
+const validateReview = (req, res, next) => {
+  let { error } = reviewJoiSchema.validate(req.body);
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(", ");
+    throw new ExpressError(400, errMsg);
+  }
+  next();
+};
 
 app.get("/", (req, res) => {
   res.send("Welcome to hote route");
 });
 
 //*listing all hotels
-app.get("/listing", asyncWrap(async (req, res) => {
-  let listingInfo = await Listing.find({});
-  // console.log(listingInfo);
-  res.render("listings/index", { listingInfo });
-}));
+app.get(
+  "/listing",
+  asyncWrap(async (req, res) => {
+    let listingInfo = await Listing.find({});
+    // console.log(listingInfo);
+    res.render("listings/index", { listingInfo });
+  }),
+);
 
 //* adding new hotel to listing
 app.get("/listing/new", (req, res) => {
@@ -55,11 +68,11 @@ app.get("/listing/new", (req, res) => {
 });
 
 app.post(
-  "/listings",validateListing,
-  asyncWrap(async (req, res,next) => {
-   
+  "/listings",
+  validateListing,
+  asyncWrap(async (req, res, next) => {
     let listing = req.body.listing;
-      
+
     const list = new Listing(listing);
     // console.log(list);
     await list.save();
@@ -68,48 +81,92 @@ app.post(
 );
 
 //*update route- will update the info of hotel which is listed
-app.get("/listing/edit/:id", asyncWrap(async (req, res) => {
-  let { id } = req.params;
-  // console.log(id);
+app.get(
+  "/listing/edit/:id",
+  asyncWrap(async (req, res) => {
+    let { id } = req.params;
+    // console.log(id);
 
-  let listing = await Listing.findById(id);
-  // console.log(Hoteldata);
-  res.render("listings/edit", { listing });
-}));
+    let listing = await Listing.findById(id);
+    // console.log(Hoteldata);
+    res.render("listings/edit", { listing });
+  }),
+);
 
-app.patch("/listings/:id", validateListing, asyncWrap(async (req, res) => {
-  const { id } = req.params;
-  await Listing.findByIdAndUpdate(id, req.body.listing);
-  res.redirect(`/listing/${id}`);
-}));
+app.patch(
+  "/listings/:id",
+  validateListing,
+  asyncWrap(async (req, res) => {
+    const { id } = req.params;
+    await Listing.findByIdAndUpdate(id, req.body.listing);
+    res.redirect(`/listing/${id}`);
+  }),
+);
 
 //*delete route- will delete the info of hotel which is listed
 
-app.delete("/listings/:id", asyncWrap(async (req, res) => {
-  const { id } = req.params;
-  await Listing.findByIdAndDelete(id).then((res) => {
-    console.log("deleted the listing");
-  });
-  res.redirect("/listing");
-}));
+app.delete(
+  "/listings/:id",
+  asyncWrap(async (req, res) => {
+    const { id } = req.params;
+    await Listing.findByIdAndDelete(id).then((res) => {
+      console.log("deleted the listing");
+    });
+    res.redirect("/listing");
+  }),
+);
 
 //*  detailed info of each hotel
-app.get("/listing/:id", asyncWrap(async (req, res) => {
-  let { id } = req.params;
-  // console.log(id);
-  const listedgData = await Listing.findById(id);
-  // console.log(listedgData);
-  res.render("listings/show", { listedgData });
-}));
+app.get(
+  "/listing/:id",
+  asyncWrap(async (req, res) => {
+    let { id } = req.params;
+    // console.log(id);
+    const listedgData = await Listing.findById(id).populate("reviews");
+    // console.log(listedgData);
+    res.render("listings/show", { listedgData });
+  }),
+);
 
-//* if we reach to wrong route 
+//*for post an reviews
+app.post("/listings/:id/reviews", validateReview, async (req, res) => {
+  let { id } = req.params;
+  let listing = await Listing.findById(id);
+  let review = req.body.review;
+  let newReview = new Review(review);
+  listing.reviews.push(newReview);
+
+  await newReview.save();
+  await listing.save();
+  res.redirect(`/listing/${id}`);
+});
+
+//* for delete an review
+app.delete(
+  "/listings/:listing_id/review/:review_id",
+  asyncWrap(async (req, res, next) => {
+    const { listing_id, review_id } = req.params;
+
+    await Listing.findByIdAndUpdate(listing_id, {
+      $pull: { reviews: review_id },//* pull out the item in array which follow given condition
+    });
+
+    await Review.findByIdAndDelete(review_id);
+
+    // console.log("Deleted review");
+
+    res.redirect(`/listing/${listing_id}`);
+  }),
+);
+
+//* if we reach to wrong route
 app.all("/{*splat}", (req, res, next) => {
   next(new ExpressError(404, "Page not found"));
 });
 
 app.use((err, req, res, next) => {
-  let {status=500,message="Something went wrong"} =err;
-  res.status(status).render("./listings/error.ejs",{message})
+  let { status = 500, message = "Something went wrong" } = err;
+  res.status(status).render("./listings/error.ejs", { message });
 });
 
 app.listen(port, (req, res) => {

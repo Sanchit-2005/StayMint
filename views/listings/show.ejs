@@ -1,12 +1,9 @@
 <% layout("/layout/boilerplate") -%>
 
 <body>
-    
-
-
-  <div class="row mb-3">
+  <div class="row mb-3 mt-3 ">
     <div class="col-8 offset-2">
-         <h2 class="offset-1">Hotel details</h2> 
+      <h2 class="offset-1"><%=listedgData.title%></h2>
       <div class="card show-hotel col-8 offset-2">
         <img
           src="<%=listedgData.image.url%>"
@@ -15,12 +12,9 @@
         />
         <div class="card-body">
           <p class="card-text">
-            <b><%=listedgData.title%></b>
-            <br />
-            <br>
             <%=listedgData.description %>
             <br />
-            <br>
+            <br />
             &#8377;<%= listedgData.price.toLocaleString("en-IN") %>
             <br />
             <%=listedgData.location %>
@@ -32,7 +26,7 @@
 
       <div class="btns mb-3">
         <form action="/listing/edit/<%=listedgData.id%>" method="GET">
-          <button type="submit" class="btn btn-success  offset-2">Edit</button>
+          <button type="submit" class="btn btn-success offset-2">Edit</button>
         </form>
         <br />
         <form
@@ -46,9 +40,88 @@
         </form>
       </div>
     </div>
+    <hr />
+    <!-- reviews  form  -->
+    <div class="col-8 offset-3 mt-5">
+      <h4>Write a review</h4>
+      <form
+        action="/listings/<%=listedgData.id%>/reviews/"
+        method="POST"
+        class="needs-validation"
+        novalidate
+      >
+        <div class="mb-3 mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <br />
+          <input
+            class="form-range"
+            type="range"
+            min="1"
+            max="5"
+            id="rating"
+            name="review[rating]"
+          />
+          <output for="rating" id="rangeValue" aria-hidden="true"></output>
+        </div>
+
+        <div class="mb-3 mt-3">
+          <label for="comment" class="form-label">Comments</label>
+          <textarea
+            class="form-control"
+            id="comment"
+            name="review[comment]"
+            rows="5"
+            placeholder="Write something"
+            required
+          ></textarea>
+          <div class="invalid-feedback">please write something</div>
+        </div>
+
+        <button class="btn btn-outline-dark">Submit</button>
+      </form>
+    </div>
+
+
+    <!-- showing the reviews -->
+    <div class="col-8 offset-3 mt-5">
+    <h4>All Reviews</h4>
+<br>
+    <div class="row">
+        <% for(let review of listedgData.reviews){ %>
+
+        <div class="col-6 mb-3">
+            <div class="card h-100 review-card">
+                <div class="card-body">
+                    <h5 class="card-title">Sanchit Wakpanjar</h5>
+                    <p class="card-text">
+                        <%= review.comment %> - <%= review.rating %> ⭐
+                    </p>
+                    <form method="POST" action="/listings/<%=listedgData._id%>/review/<%=review._id%>?_method=DELETE">
+                         <button class="btn btn-danger" type="submit">Delete Review</button>
+                    </form>
+                    
+                </div>
+                
+            </div>
+        </div>
+
+        <% } %>
+    </div>
+</div>
   </div>
 
   <script>
+    // This is an example script, please modify as needed
+    const rangeInput = document.getElementById("rating");
+    const rangeOutput = document.getElementById("rangeValue");
+
+    // Set initial value
+    rangeOutput.textContent = rangeInput.value;
+
+    rangeInput.addEventListener("input", function () {
+      rangeOutput.textContent = this.value;
+    });
+
     const deleteForm = document.getElementById("delete-form");
 
     deleteForm.addEventListener("submit", function (e) {

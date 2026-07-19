@@ -116,3 +116,12 @@ main {
     padding-right: 0;
     padding-top: 1rem;
 }
+
+
+.review-card {
+      border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 25px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
