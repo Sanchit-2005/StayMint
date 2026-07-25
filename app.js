@@ -12,16 +12,20 @@ const { schema: listingSchema, reviewJoiSchema } = require("./JoiSchema.js");
 const Review = require("./models/review");
 const session = require("express-session");
 const flash = require("connect-flash");
+const User = require("./models/user");
+const LocalStrategy = require("passport-local").Strategy;
+const passport = require("passport");
+
 const sessionOption = {
   secret: "secretcode",
   resave: false,
   saveUninitialized: true,
 
-  cookie:{
-    httpOnly:true,
-    maxAge:7*24*60*60*1000,
-    expire:Date.now()+7*24*60*60*1000,
-  }
+  cookie: {
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    expire: Date.now() + 7 * 24 * 60 * 60 * 1000,
+  },
 };
 app.use(methodOverride("_method"));
 app.use(express.json());
@@ -32,9 +36,17 @@ app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(session(sessionOption));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.fail = req.flash("fail");
+  res.locals.error=req.flash("error");q
   next();
 });
 
@@ -146,7 +158,7 @@ app.get(
   "/listing/:id",
   asyncWrap(async (req, res) => {
     let { id } = req.params;
-    
+
     // console.log(id);
     const listedgData = await Listing.findById(id).populate("reviews");
     if (!listedgData) {
@@ -191,7 +203,43 @@ app.delete(
   }),
 );
 
-//* if we reach to wrong route
+//* for signup
+app.get("/signup", (req, res) => {
+  res.render("users/signup");
+});
+
+app.post(
+  "/signup",
+  asyncWrap(async (req, res) => {
+    try {
+      let { username, password, email } = req.body;
+      const newUser = new User({ username, email });
+      await User.register(newUser, password);
+      req.flash("success", "Signup successfully");
+      res.redirect("/listing");
+    } catch (err) {
+      req.flash("fail", err.message);
+      res.redirect("/signup");
+    }
+  }),
+);
+
+//*login 
+
+app.get("/login",(req,res)=>{
+  res.render("users/login")
+})
+
+app.post("/login",passport.authenticate("local",{
+  failureRedirect:"/login",
+  failureFlash:true
+
+}),async(req,res)=>{
+req.flash("success","Welcome back to StayMint");
+res.redirect("/listing");
+});
+
+// //* if we reach to wrong route
 app.all("/{*splat}", (req, res, next) => {
   next(new ExpressError(404, "Page not found"));
 });

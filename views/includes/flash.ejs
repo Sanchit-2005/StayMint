@@ -2,7 +2,7 @@
 <br />
 
 <div
-  class="alert alert-success alert-dismissible fade show col-8 offset-2"
+  class="alert alert-success alert-dismissible fade show col-8 offset-2 mt-3"
   role="alert"
 >
   <h3><%= success[0] %></h3>
@@ -17,10 +17,27 @@
 
 <% if (fail.length) { %>
 <div
-  class="alert alert-danger alert-dismissible fade show col-6 offset-3"
+  class="alert alert-danger alert-dismissible fade show col-6 offset-3 mt-3"
   role="alert"
 >
-  <h3><%= fail[0] %></h3>
+  <p><%= fail[0] %></p>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+
+<% } %>
+
+
+<% if (error.length) { %>
+<div
+  class="alert alert-danger alert-dismissible fade show col-6 offset-3 mt-3"
+  role="alert"
+>
+  <p><%= error[0] %></p>
   <button
     type="button"
     class="btn-close"
