@@ -10,7 +10,19 @@ const asyncWrap = require("./utils/asyncWrap.js");
 const ExpressError = require("./utils/expressError.js");
 const { schema: listingSchema, reviewJoiSchema } = require("./JoiSchema.js");
 const Review = require("./models/review");
+const session = require("express-session");
+const flash = require("connect-flash");
+const sessionOption = {
+  secret: "secretcode",
+  resave: false,
+  saveUninitialized: true,
 
+  cookie:{
+    httpOnly:true,
+    maxAge:7*24*60*60*1000,
+    expire:Date.now()+7*24*60*60*1000,
+  }
+};
 app.use(methodOverride("_method"));
 app.use(express.json());
 app.set("view engine", "ejs");
@@ -18,6 +30,13 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+app.use(session(sessionOption));
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.fail = req.flash("fail");
+  next();
+});
 
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/STAYMINT");
@@ -76,6 +95,7 @@ app.post(
     const list = new Listing(listing);
     // console.log(list);
     await list.save();
+    req.flash("success", "Added the new listing");
     res.redirect("/listing");
   }),
 );
@@ -88,6 +108,7 @@ app.get(
     // console.log(id);
 
     let listing = await Listing.findById(id);
+
     // console.log(Hoteldata);
     res.render("listings/edit", { listing });
   }),
@@ -99,6 +120,8 @@ app.patch(
   asyncWrap(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body.listing);
+
+    req.flash("success", "updated the listing");
     res.redirect(`/listing/${id}`);
   }),
 );
@@ -112,6 +135,8 @@ app.delete(
     await Listing.findByIdAndDelete(id).then((res) => {
       console.log("deleted the listing");
     });
+
+    req.flash("success", "deleted  the listing");
     res.redirect("/listing");
   }),
 );
@@ -121,8 +146,13 @@ app.get(
   "/listing/:id",
   asyncWrap(async (req, res) => {
     let { id } = req.params;
+    
     // console.log(id);
     const listedgData = await Listing.findById(id).populate("reviews");
+    if (!listedgData) {
+      req.flash("fail", "cannot found the listing");
+      return res.redirect("/listing");
+    }
     // console.log(listedgData);
     res.render("listings/show", { listedgData });
   }),
@@ -138,6 +168,7 @@ app.post("/listings/:id/reviews", validateReview, async (req, res) => {
 
   await newReview.save();
   await listing.save();
+  req.flash("success", "posted a review ");
   res.redirect(`/listing/${id}`);
 });
 
@@ -148,12 +179,13 @@ app.delete(
     const { listing_id, review_id } = req.params;
 
     await Listing.findByIdAndUpdate(listing_id, {
-      $pull: { reviews: review_id },//* pull out the item in array which follow given condition
+      $pull: { reviews: review_id }, //* pull out the item in array which follow given condition
     });
 
     await Review.findByIdAndDelete(review_id);
 
     // console.log("Deleted review");
+    req.flash("success", "deleted the review");
 
     res.redirect(`/listing/${listing_id}`);
   }),
