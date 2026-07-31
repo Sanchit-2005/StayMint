@@ -15,6 +15,8 @@ const flash = require("connect-flash");
 const User = require("./models/user");
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
+const { isLoggin } = require("./middleware");
+const {saveRedirectTo,checkOwner,validateListing,validateReview,checkReviewAuthor}=require("./middleware");
 
 const sessionOption = {
   secret: "secretcode",
@@ -46,7 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.fail = req.flash("fail");
-  res.locals.error=req.flash("error");q
+  res.locals.error = req.flash("error");
+  res.locals.currUser=req.user;
   next();
 });
 
@@ -61,23 +64,8 @@ main()
     console.error("Error connecting to MongoDB:", err);
   });
 
-const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(", ");
-    throw new ExpressError(400, errMsg);
-  }
-  next();
-};
 
-const validateReview = (req, res, next) => {
-  let { error } = reviewJoiSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(", ");
-    throw new ExpressError(400, errMsg);
-  }
-  next();
-};
+
 
 app.get("/", (req, res) => {
   res.send("Welcome to hote route");
@@ -94,7 +82,7 @@ app.get(
 );
 
 //* adding new hotel to listing
-app.get("/listing/new", (req, res) => {
+app.get("/listing/new", isLoggin, (req, res) => {
   res.render("listings/new");
 });
 
@@ -102,8 +90,9 @@ app.post(
   "/listings",
   validateListing,
   asyncWrap(async (req, res, next) => {
+    // console.log(req.user);
     let listing = req.body.listing;
-
+           listing.owner=req.user._id;
     const list = new Listing(listing);
     // console.log(list);
     await list.save();
@@ -115,6 +104,7 @@ app.post(
 //*update route- will update the info of hotel which is listed
 app.get(
   "/listing/edit/:id",
+  isLoggin,checkOwner,
   asyncWrap(async (req, res) => {
     let { id } = req.params;
     // console.log(id);
@@ -142,10 +132,12 @@ app.patch(
 
 app.delete(
   "/listings/:id",
+  checkOwner,
+  isLoggin,
   asyncWrap(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id).then((res) => {
-      console.log("deleted the listing");
+      // console.log("deleted the listing");
     });
 
     req.flash("success", "deleted  the listing");
@@ -160,7 +152,7 @@ app.get(
     let { id } = req.params;
 
     // console.log(id);
-    const listedgData = await Listing.findById(id).populate("reviews");
+    const listedgData = await Listing.findById(id).populate({path:"reviews",populate:({path:"reviewAuthor"})}).populate("owner");
     if (!listedgData) {
       req.flash("fail", "cannot found the listing");
       return res.redirect("/listing");
@@ -171,12 +163,14 @@ app.get(
 );
 
 //*for post an reviews
-app.post("/listings/:id/reviews", validateReview, async (req, res) => {
+app.post("/listings/:id/reviews",isLoggin, validateReview, async (req, res) => {
   let { id } = req.params;
   let listing = await Listing.findById(id);
   let review = req.body.review;
   let newReview = new Review(review);
+  newReview.reviewAuthor=res.locals.currUser._id;
   listing.reviews.push(newReview);
+  console.log(newReview);
 
   await newReview.save();
   await listing.save();
@@ -186,7 +180,7 @@ app.post("/listings/:id/reviews", validateReview, async (req, res) => {
 
 //* for delete an review
 app.delete(
-  "/listings/:listing_id/review/:review_id",
+  "/listings/:listing_id/review/:review_id",isLoggin,checkReviewAuthor,
   asyncWrap(async (req, res, next) => {
     const { listing_id, review_id } = req.params;
 
@@ -214,9 +208,15 @@ app.post(
     try {
       let { username, password, email } = req.body;
       const newUser = new User({ username, email });
-      await User.register(newUser, password);
-      req.flash("success", "Signup successfully");
-      res.redirect("/listing");
+      const registerdUser=await User.register(newUser, password);
+      req.login(registerdUser,(err)=>{
+          if (err) {
+      return next(err);
+    }
+    req.flash("success", "Welcome to StayMint");
+    return res.redirect("/listing");
+      })
+     
     } catch (err) {
       req.flash("fail", err.message);
       res.redirect("/signup");
@@ -224,19 +224,33 @@ app.post(
   }),
 );
 
-//*login 
+//*login
 
-app.get("/login",(req,res)=>{
-  res.render("users/login")
-})
+app.get("/login", (req, res) => {
+  res.render("users/login");
+});
 
-app.post("/login",passport.authenticate("local",{
-  failureRedirect:"/login",
-  failureFlash:true
+app.post(
+  "/login",saveRedirectTo,
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  async (req, res) => {
+    req.flash("success", "Welcome back to StayMint");
+    res.redirect( res.locals.redirectTo||"/listing");
+  },
+);
 
-}),async(req,res)=>{
-req.flash("success","Welcome back to StayMint");
-res.redirect("/listing");
+//* logout
+app.get("/logout", (req, res, next) => {
+  req.logOut((err) => {
+    if (err) {
+      return next(err);
+    }
+    req.flash("success", "Logout successfully ");
+    return res.redirect("/listing");
+  });
 });
 
 // //* if we reach to wrong route

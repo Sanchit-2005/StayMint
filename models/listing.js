@@ -36,6 +36,11 @@ const ListingSchema = new Schema({
       //* fakt model ch nav barobar  asl pahije
     },
   ],
+
+  owner:{
+    type:Schema.Types.ObjectId,
+    ref:"User"
+  }
 });
 
 ListingSchema.post("findOneAndDelete",async(listing)=>{

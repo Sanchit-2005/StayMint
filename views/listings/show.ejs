@@ -12,6 +12,7 @@
         />
         <div class="card-body">
           <p class="card-text">
+            <p>Owned by <%=listedgData.owner.username %></p>
             <%=listedgData.description %>
             <br />
             <br />
@@ -23,6 +24,8 @@
           </p>
         </div>
       </div>
+
+      <% if(currUser&&currUser.equals(listedgData.owner)){ %>
 
       <div class="btns mb-3">
         <form action="/listing/edit/<%=listedgData.id%>" method="GET">
@@ -39,8 +42,11 @@
           </button>
         </form>
       </div>
+      <% } %>
     </div>
     <hr />
+
+    <% if(currUser) {%>
     <!-- reviews  form  -->
     <div class="col-8 offset-3 mt-5">
       <h4>Write a review</h4>
@@ -81,6 +87,8 @@
       </form>
     </div>
 
+ <% } %>
+
 
     <!-- showing the reviews -->
     <div class="col-8 offset-3 mt-5">
@@ -92,7 +100,7 @@
         <div class="col-6 mb-3">
             <div class="card h-100 review-card">
                 <div class="card-body">
-                    <h5 class="card-title">Sanchit Wakpanjar</h5>
+                    <h5 class="card-title">@<%=review.reviewAuthor.username %></h5>
                     <p class="card-text">
                         <%= review.comment %> - <%= review.rating %> ⭐
                     </p>
@@ -107,7 +115,9 @@
 
         <% } %>
     </div>
+   
 </div>
+
   </div>
 
   <script>

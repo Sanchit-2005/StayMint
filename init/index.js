@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Listing=require("../models/listing.js");
-const  Info=require("./data.js");
+const Listing = require("../models/listing.js");
+const Info = require("./data.js");
 
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/STAYMINT");
@@ -13,10 +13,14 @@ main()
     console.error("Error connecting to MongoDB:", err);
   });
 
-  const initDB=async()=>{
-    await Listing.deleteMany({});
-    await Listing.insertMany(Info.data);
-  }
-  initDB();
+const initDB = async () => {
+  Info.data = Info.data.map((obj) => ({
+    ...obj,
+    owner: "6a64fd9c82c70e6a4826bd35",
+  }));
+  await Listing.deleteMany({});
+  await Listing.insertMany(Info.data);
+};
+initDB();
 
-  module.exports=Listing;
+module.exports = Listing;
