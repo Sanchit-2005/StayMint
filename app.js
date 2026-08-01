@@ -16,8 +16,9 @@ const User = require("./models/user");
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const { isLoggin } = require("./middleware");
-const listings=require("./routes/listing.js");
-const reviews=require("./routes/review.js")
+const listingsRouter = require("./routes/listing.js");
+const reviewsRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 const {
   saveRedirectTo,
   checkOwner,
@@ -79,33 +80,9 @@ app.get("/", (req, res) => {
   res.send("Welcome to hote route");
 });
 
-
-app.use("/listings",listings);
-app.use("/listings/:listing_id/reviews",reviews);
-
-
-
-//* for signup
-app.get("/signup", userController.renderSignupForm);
-
-app.post("/signup", asyncWrap(userController.signup));
-
-//*login
-
-app.get("/login", userController.renderLoginForm);
-
-app.post(
-  "/login",
-  saveRedirectTo,
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  userController.login,
-);
-
-//* logout
-app.get("/logout", userController.logout);
+app.use("/listings", listingsRouter);
+app.use("/listings/:listing_id/reviews", reviewsRouter);
+app.use("/", userRouter);
 
 // //* if we reach to wrong route
 app.all("/{*splat}", (req, res, next) => {
