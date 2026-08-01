@@ -14,16 +14,13 @@ const {
 } = require("../middleware.js");
 
 //*listing all hotels
-router.get("/", asyncWrap(listingController.index));
+router
+  .route("/")
+  .get(asyncWrap(listingController.index))
+  .post(validateListing, asyncWrap(listingController.addNewListing));
 
 //* adding new hotel to listing
 router.get("/new", isLoggin, listingController.renderNewForm);
-
-router.post(
-  "/",
-  validateListing,
-  asyncWrap(listingController.addNewListing),
-);
 
 //*update route- will update the info of hotel which is listed
 router.get(
@@ -33,26 +30,10 @@ router.get(
   asyncWrap(listingController.renderEditForm),
 );
 
-router.patch(
-  "/:id",
-  validateListing,
-  asyncWrap(listingController.updateListing),
-);
+router
+  .route("/:id")
+  .patch(validateListing, asyncWrap(listingController.updateListing))
+  .delete(checkOwner, isLoggin, asyncWrap(listingController.destroyListing))
+  .get(asyncWrap(listingController.showListing));
 
-//*delete route- will delete the info of hotel which is listed
-
-router.delete(
-  "/:id",
-  checkOwner,
-  isLoggin,
-  asyncWrap(listingController.destroyListing)
-);
-
-//*  detailed info of each hotel
-router.get(
-  "/:id",
-  asyncWrap(listingController.showListing),
-);
-
-
-module.exports=router;
+module.exports = router;
