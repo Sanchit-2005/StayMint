@@ -3,8 +3,8 @@ const Listing = require("../models/listing");
 
 
 module.exports.createNewReview=async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
+    let { listing_id } = req.params;
+    let listing = await Listing.findById(listing_id);
     let review = req.body.review;
     let newReview = new Review(review);
     newReview.reviewAuthor = res.locals.currUser._id;
@@ -14,7 +14,7 @@ module.exports.createNewReview=async (req, res) => {
     await newReview.save();
     await listing.save();
     req.flash("success", "posted a review ");
-    res.redirect(`/listing/${id}`);
+    res.redirect(`/listings/${listing_id}`);
   }
 
 
@@ -30,5 +30,5 @@ module.exports.createNewReview=async (req, res) => {
       // console.log("Deleted review");
       req.flash("success", "deleted the review");
   
-      res.redirect(`/listing/${listing_id}`);
+      res.redirect(`/listings/${listing_id}`);
     }

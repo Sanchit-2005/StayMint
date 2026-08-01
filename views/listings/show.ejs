@@ -28,7 +28,7 @@
       <% if(currUser&&currUser.equals(listedgData.owner)){ %>
 
       <div class="btns mb-3">
-        <form action="/listing/edit/<%=listedgData.id%>" method="GET">
+        <form action="/listings/edit/<%=listedgData.id%>" method="GET">
           <button type="submit" class="btn btn-success offset-2">Edit</button>
         </form>
         <br />
@@ -104,7 +104,7 @@
                     <p class="card-text">
                         <%= review.comment %> - <%= review.rating %> ⭐
                     </p>
-                    <form method="POST" action="/listings/<%=listedgData._id%>/review/<%=review._id%>?_method=DELETE">
+                    <form method="POST" action="/listings/<%=listedgData._id%>/reviews/<%=review._id%>?_method=DELETE">
                          <button class="btn btn-danger" type="submit">Delete Review</button>
                     </form>
                     

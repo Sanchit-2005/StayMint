@@ -20,7 +20,7 @@ module.exports.showListing=async (req, res) => {
       .populate("owner");
     if (!listedgData) {
       req.flash("fail", "cannot found the listing");
-      return res.redirect("/listing");
+      return res.redirect("/listings");
     }
     // console.log(listedgData);
     res.render("listings/show", { listedgData });
@@ -35,7 +35,7 @@ module.exports.showListing=async (req, res) => {
       // console.log(list);
       await list.save();
       req.flash("success", "Added the new listing");
-      res.redirect("/listing");
+      res.redirect("/listings");
     }
 
     module.exports.renderEditForm=async (req, res) => {
@@ -53,7 +53,7 @@ module.exports.showListing=async (req, res) => {
       await Listing.findByIdAndUpdate(id, req.body.listing);
   
       req.flash("success", "updated the listing");
-      res.redirect(`/listing/${id}`);
+      res.redirect(`/listings/${id}`);
     }
 
     module.exports.destroyListing=async (req, res) => {
@@ -63,5 +63,5 @@ module.exports.showListing=async (req, res) => {
         });
     
         req.flash("success", "deleted  the listing");
-        res.redirect("/listing");
+        res.redirect("/listings");
       }

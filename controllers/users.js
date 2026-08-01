@@ -14,7 +14,7 @@ module.exports.signup = async (req, res) => {
         return next(err);
       }
       req.flash("success", "Welcome to StayMint");
-      return res.redirect("/listing");
+      return res.redirect("/listings");
     });
   } catch (err) {
     req.flash("fail", err.message);
@@ -28,7 +28,7 @@ module.exports.renderLoginForm = (req, res) => {
 
 module.exports.login = async (req, res) => {
   req.flash("success", "Welcome back to StayMint");
-  res.redirect(res.locals.redirectTo || "/listing");
+  res.redirect(res.locals.redirectTo || "/listings");
 };
 
 module.exports.logout = (req, res, next) => {
@@ -37,6 +37,6 @@ module.exports.logout = (req, res, next) => {
       return next(err);
     }
     req.flash("success", "Logout successfully ");
-    return res.redirect("/listing");
+    return res.redirect("/listings");
   });
 };

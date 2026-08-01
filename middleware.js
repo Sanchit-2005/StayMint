@@ -28,7 +28,7 @@ module.exports.checkOwner=async(req,res,next)=>{
   console.log(listing.owner,res.locals.currUser._id);
   if(!listing.owner.equals(res.locals.currUser._id)){
     req.flash("fail","you are not authorized to do this action");
-    return res.redirect(`/listing/${id}`);
+    return res.redirect(`/listings/${id}`);
   }
   next();
 
@@ -62,7 +62,7 @@ module.exports.checkReviewAuthor=async(req,res,next)=>{
   
   if(!review.reviewAuthor.equals(res.locals.currUser._id)){
     req.flash("fail","you are not allowed to delete the review");
-    return res.redirect(`/listing/${listing_id}`);
+    return res.redirect(`/listings/${listing_id}`);
   }
   next();
 
