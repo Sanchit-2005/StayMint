@@ -16,7 +16,16 @@ const User = require("./models/user");
 const LocalStrategy = require("passport-local").Strategy;
 const passport = require("passport");
 const { isLoggin } = require("./middleware");
-const {saveRedirectTo,checkOwner,validateListing,validateReview,checkReviewAuthor}=require("./middleware");
+const {
+  saveRedirectTo,
+  checkOwner,
+  validateListing,
+  validateReview,
+  checkReviewAuthor,
+} = require("./middleware");
+const listingController = require("./controllers/listings");
+const reviewController=require("./controllers/reviews");
+const userController=require("./controllers/users")
 
 const sessionOption = {
   secret: "secretcode",
@@ -49,7 +58,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.fail = req.flash("fail");
   res.locals.error = req.flash("error");
-  res.locals.currUser=req.user;
+  res.locals.currUser = req.user;
   next();
 });
 
@@ -64,68 +73,34 @@ main()
     console.error("Error connecting to MongoDB:", err);
   });
 
-
-
-
 app.get("/", (req, res) => {
   res.send("Welcome to hote route");
 });
 
 //*listing all hotels
-app.get(
-  "/listing",
-  asyncWrap(async (req, res) => {
-    let listingInfo = await Listing.find({});
-    // console.log(listingInfo);
-    res.render("listings/index", { listingInfo });
-  }),
-);
+app.get("/listing", asyncWrap(listingController.index));
 
 //* adding new hotel to listing
-app.get("/listing/new", isLoggin, (req, res) => {
-  res.render("listings/new");
-});
+app.get("/listing/new", isLoggin, listingController.renderNewForm);
 
 app.post(
   "/listings",
   validateListing,
-  asyncWrap(async (req, res, next) => {
-    // console.log(req.user);
-    let listing = req.body.listing;
-           listing.owner=req.user._id;
-    const list = new Listing(listing);
-    // console.log(list);
-    await list.save();
-    req.flash("success", "Added the new listing");
-    res.redirect("/listing");
-  }),
+  asyncWrap(listingController.addNewListing),
 );
 
 //*update route- will update the info of hotel which is listed
 app.get(
   "/listing/edit/:id",
-  isLoggin,checkOwner,
-  asyncWrap(async (req, res) => {
-    let { id } = req.params;
-    // console.log(id);
-
-    let listing = await Listing.findById(id);
-
-    // console.log(Hoteldata);
-    res.render("listings/edit", { listing });
-  }),
+  isLoggin,
+  checkOwner,
+  asyncWrap(listingController.renderEditForm),
 );
 
 app.patch(
   "/listings/:id",
   validateListing,
-  asyncWrap(async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, req.body.listing);
-
-    req.flash("success", "updated the listing");
-    res.redirect(`/listing/${id}`);
-  }),
+  asyncWrap(listingController.updateListing),
 );
 
 //*delete route- will delete the info of hotel which is listed
@@ -134,124 +109,55 @@ app.delete(
   "/listings/:id",
   checkOwner,
   isLoggin,
-  asyncWrap(async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id).then((res) => {
-      // console.log("deleted the listing");
-    });
-
-    req.flash("success", "deleted  the listing");
-    res.redirect("/listing");
-  }),
+  asyncWrap(listingController.destroyListing)
 );
 
 //*  detailed info of each hotel
 app.get(
   "/listing/:id",
-  asyncWrap(async (req, res) => {
-    let { id } = req.params;
-
-    // console.log(id);
-    const listedgData = await Listing.findById(id).populate({path:"reviews",populate:({path:"reviewAuthor"})}).populate("owner");
-    if (!listedgData) {
-      req.flash("fail", "cannot found the listing");
-      return res.redirect("/listing");
-    }
-    // console.log(listedgData);
-    res.render("listings/show", { listedgData });
-  }),
+  asyncWrap(listingController.showListing),
 );
 
 //*for post an reviews
-app.post("/listings/:id/reviews",isLoggin, validateReview, async (req, res) => {
-  let { id } = req.params;
-  let listing = await Listing.findById(id);
-  let review = req.body.review;
-  let newReview = new Review(review);
-  newReview.reviewAuthor=res.locals.currUser._id;
-  listing.reviews.push(newReview);
-  console.log(newReview);
-
-  await newReview.save();
-  await listing.save();
-  req.flash("success", "posted a review ");
-  res.redirect(`/listing/${id}`);
-});
+app.post(
+  "/listings/:id/reviews",
+  isLoggin,
+  validateReview,
+  asyncWrap(reviewController.createNewReview)
+);
 
 //* for delete an review
 app.delete(
-  "/listings/:listing_id/review/:review_id",isLoggin,checkReviewAuthor,
-  asyncWrap(async (req, res, next) => {
-    const { listing_id, review_id } = req.params;
-
-    await Listing.findByIdAndUpdate(listing_id, {
-      $pull: { reviews: review_id }, //* pull out the item in array which follow given condition
-    });
-
-    await Review.findByIdAndDelete(review_id);
-
-    // console.log("Deleted review");
-    req.flash("success", "deleted the review");
-
-    res.redirect(`/listing/${listing_id}`);
-  }),
+  "/listings/:listing_id/review/:review_id",
+  isLoggin,
+  checkReviewAuthor,
+  asyncWrap(reviewController.destroyReview),
 );
 
 //* for signup
-app.get("/signup", (req, res) => {
-  res.render("users/signup");
-});
+app.get("/signup",userController.renderSignupForm );
 
 app.post(
   "/signup",
-  asyncWrap(async (req, res) => {
-    try {
-      let { username, password, email } = req.body;
-      const newUser = new User({ username, email });
-      const registerdUser=await User.register(newUser, password);
-      req.login(registerdUser,(err)=>{
-          if (err) {
-      return next(err);
-    }
-    req.flash("success", "Welcome to StayMint");
-    return res.redirect("/listing");
-      })
-     
-    } catch (err) {
-      req.flash("fail", err.message);
-      res.redirect("/signup");
-    }
-  }),
+  asyncWrap(userController.signup),
 );
 
 //*login
 
-app.get("/login", (req, res) => {
-  res.render("users/login");
-});
+app.get("/login",userController.renderLoginForm);
 
 app.post(
-  "/login",saveRedirectTo,
+  "/login",
+  saveRedirectTo,
   passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: true,
   }),
-  async (req, res) => {
-    req.flash("success", "Welcome back to StayMint");
-    res.redirect( res.locals.redirectTo||"/listing");
-  },
+  userController.login
 );
 
 //* logout
-app.get("/logout", (req, res, next) => {
-  req.logOut((err) => {
-    if (err) {
-      return next(err);
-    }
-    req.flash("success", "Logout successfully ");
-    return res.redirect("/listing");
-  });
-});
+app.get("/logout", userController.logout);
 
 // //* if we reach to wrong route
 app.all("/{*splat}", (req, res, next) => {
