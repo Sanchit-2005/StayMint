@@ -4,6 +4,10 @@ const asyncWrap = require("../utils/asyncWrap.js");
 const { schema: listingSchema, reviewJoiSchema } = require("../JoiSchema.js");
 const listingController = require("../controllers/listings");
 const { isLoggin } = require("../middleware.js");
+const multer  = require('multer')
+const {storage}=require("../cloudConfig.js");
+
+const upload = multer({storage})
 
 const {
   saveRedirectTo,
@@ -17,7 +21,7 @@ const {
 router
   .route("/")
   .get(asyncWrap(listingController.index))
-  .post(validateListing, asyncWrap(listingController.addNewListing));
+  .post( isLoggin,upload.single('listing[image]'),validateListing,asyncWrap(listingController.addNewListing));
 
 //* adding new hotel to listing
 router.get("/new", isLoggin, listingController.renderNewForm);
@@ -32,7 +36,7 @@ router.get(
 
 router
   .route("/:id")
-  .patch(validateListing, asyncWrap(listingController.updateListing))
+  .patch(isLoggin,upload.single('listing[image]'),validateListing, asyncWrap(listingController.updateListing))
   .delete(checkOwner, isLoggin, asyncWrap(listingController.destroyListing))
   .get(asyncWrap(listingController.showListing));
 

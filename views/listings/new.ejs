@@ -1,96 +1,101 @@
 <% layout("/layout/boilerplate") -%>
 <body>
-  <br>
-  <br>
+  <br />
+  <br />
   <div class="row">
     <div class="col-8 offset-2">
+      <form
+        action="/listings"
+        method="POST"
+        novalidate
+        class="needs-validation"
+        enctype="multipart/form-data"
+      >
+        <h2>Add hotel</h2>
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            name="listing[title]"
+            placeholder=" Enter Hotel name"
+            id="title"
+            required
+          />
+          <div class="invalid-feedback">Please enter the valid hotel name</div>
+          <div class="valid-feedback">Name looks good</div>
+        </div>
 
-  <form action="/listings" method="POST" novalidate class="needs-validation"> 
-    <h2>Add hotel</h2>
-    <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
-      <input
-        type="text"
-        class="form-control"
-        name="listing[title]"
-        placeholder=" Enter Hotel name"
-        id="title"
-        required
-      />
-      <div class="invalid-feedback">
-        Please enter the valid  hotel name
-      </div>
-      <div class="valid-feedback">
-        Name looks good
-      </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">description</label>
+          <textarea
+            class="form-control"
+            name="listing[description]"
+            id="description"
+            placeholder="write about the hotel"
+            required
+          ></textarea>
+          <div class="invalid-feedback">Please enter the short description</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">upload listing image </label>
+          <input
+            type="file"
+            name="listing[image]"
+            placeholder="image link/url"
+            class="form-control"
+            id="image"
+          />
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">price</label>
+            <input
+              type="number"
+              name="listing[price]"
+              placeholder="1000"
+              class="form-control"
+              id="price"
+              required
+            />
+            <div class="invalid-feedback">enter the valid price</div>
+          </div>
+
+          <div class="mb-3 col-md-8">
+            <label for="location" class="form-label">location</label>
+            <input
+              type="text"
+              name="listing[location]"
+              placeholder="Pune,Maharashtra"
+              class="form-control"
+              id="location"
+              required
+            />
+            <div class="invalid-feedback">Please enter the valid location</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="country" class="form-label">country</label>
+          <input
+            type="text"
+            name="listing[country]"
+            placeholder="India"
+            class="form-control"
+            id="country"
+            required
+          />
+          <div class="invalid-feedback">Please enter the valid location</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary col-6 offset-3 mb-3 mt-3">
+          Submit
+        </button>
+        <br />
+      </form>
     </div>
-
-    <div class="mb-3">
-      <label for="description" class="form-label">description</label>
-      <textarea class="form-control" name="listing[description]" id="description"  placeholder="write about the hotel" required></textarea>
-      <div class="invalid-feedback">
-        Please enter the short description
-      </div>
-    </div>
-
-    <div class="mb-3">
-      <label for="image" class="form-label">image Link</label>
-      <input
-        type="text"
-        name="listing[image][url]"
-        placeholder="image link/url"
-        class="form-control"
-        id="image"
-      />
-    </div>
-       <div class="row">
-    <div class="mb-3 col-md-4">
-      <label for="price" class="form-label">price</label>
-      <input
-        type="number"
-        name="listing[price]"
-        placeholder="1000"
-        class="form-control"
-        id="price"
-        required
-      />
-       <div class="invalid-feedback">
-        enter the valid price
-      </div>
-    </div>
-
-    <div class="mb-3 col-md-8" >
-      <label for="location" class="form-label">location</label>
-      <input
-        type="text"
-        name="listing[location]"
-        placeholder="Pune,Maharashtra"
-        class="form-control"
-        id="location"
-           required
-   
-      />
-       <div class="invalid-feedback">
-        Please enter the valid  location
-      </div>
-
-    </div>
-    </div>
-
-    <div class="mb-3">
-      <label for="country" class="form-label">country</label>
-      <input type="text" name="listing[country]" placeholder="India" class="form-control" id="country" required/>
-       <div class="invalid-feedback">
-        Please enter the valid  location
-      </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary  col-6 offset-3 mb-3 mt-3">Submit</button>
-    <br>
-
-  </form>
   </div>
-  </div>
-  <br>
-  <br>
+  <br />
+  <br />
 </body>

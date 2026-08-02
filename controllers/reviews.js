@@ -9,7 +9,7 @@ module.exports.createNewReview=async (req, res) => {
     let newReview = new Review(review);
     newReview.reviewAuthor = res.locals.currUser._id;
     listing.reviews.push(newReview);
-    console.log(newReview);
+ 
 
     await newReview.save();
     await listing.save();
