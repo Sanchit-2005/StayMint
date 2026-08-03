@@ -1,0 +1,29 @@
+#filters{
+    display: flex;
+    flex-wrap: wrap;
+   
+   }
+   .filter{
+    margin-right: 2rem;
+    opacity: 1;
+   }
+   .filter i{
+    font-size: 20px;
+   }
+   .filter:hover{
+    opacity: 1;
+    cursor: pointer;
+   }
+   .filto{
+    margin-right: 5rem;
+    font-size: 20px;
+   }
+
+   .filter a{ 
+      text-decoration: none;
+      color: #0D47A1;
+   }
+     .filter a:hover{ 
+      
+      color: #E73F1E;
+   }

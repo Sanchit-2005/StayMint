@@ -14,7 +14,9 @@ module.exports.schema = Joi.object({
     price: Joi.number().min(0).required(),
     location: Joi.string().required(),
     country: Joi.string().required(),
+     category: Joi.string().required()
   }).required(),
+
 });
 
 //* reviews schema for server side validation

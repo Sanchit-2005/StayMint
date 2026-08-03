@@ -37,18 +37,36 @@ const ListingSchema = new Schema({
     },
   ],
 
-  owner:{
-    type:Schema.Types.ObjectId,
-    ref:"User"
-  }
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  category: {
+    type: String,
+    enum: [
+      "Trending",
+      "Beach",
+      "Mountain",
+      "Surfing",
+      "Iconic Cities",
+      "OMG",
+      "Bed_Brakfast",
+      "Arctic",
+      "Tiny House",
+      "Top of world",
+      "Amazing Pool",
+      "All"
+    ],
+    default: "Trending",
+  },
 });
 
-ListingSchema.post("findOneAndDelete",async(listing)=>{
-  if(listing){
-    await Review.deleteMany({_id:{$in:listing.reviews}});
+ListingSchema.post("findOneAndDelete", async (listing) => {
+  if (listing) {
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
     console.log("deletd the review after deleting the listing ");
   }
-})
+});
 
 const Listing = mongoose.model("Listing", ListingSchema);
 module.exports = Listing;

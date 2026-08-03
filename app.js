@@ -80,9 +80,7 @@ main()
     console.error("Error connecting to MongoDB:", err);
   });
 
-app.get("/", (req, res) => {
-  res.send("Welcome to hote route");
-});
+
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:listing_id/reviews", reviewsRouter);
