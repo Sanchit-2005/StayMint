@@ -8,7 +8,7 @@ const Review = require("./models/review.js");
 module.exports.isLoggin = (req, res, next) => {
   if (!req.isAuthenticated()) {
     req.flash("fail", "you must be login first   ");
-        req.session.redirectTo = req.get("Referrer");
+       req.session.redirectTo = req.originalUrl;  
    
   return res.redirect("/login");
   }

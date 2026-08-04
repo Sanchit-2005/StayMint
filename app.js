@@ -15,6 +15,7 @@ const ExpressError = require("./utils/expressError.js");
 const { schema: listingSchema, reviewJoiSchema } = require("./JoiSchema.js");
 const Review = require("./models/review");
 const session = require("express-session");
+const MongoStore = require("connect-mongo").default;
 const flash = require("connect-flash");
 const User = require("./models/user");
 const LocalStrategy = require("passport-local").Strategy;
@@ -34,8 +35,17 @@ const listingController = require("./controllers/listings");
 const reviewController = require("./controllers/reviews");
 const userController = require("./controllers/users");
 
+const store = MongoStore.create({
+  mongoUrl: process.env.ATLASDB_URL,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 60 * 60,
+});
+
 const sessionOption = {
-  secret: "secretcode",
+  store: store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
 
@@ -45,6 +55,7 @@ const sessionOption = {
     expire: Date.now() + 7 * 24 * 60 * 60 * 1000,
   },
 };
+
 app.use(methodOverride("_method"));
 app.use(express.json());
 app.set("view engine", "ejs");
@@ -69,18 +80,14 @@ app.use((req, res, next) => {
   next();
 });
 
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/STAYMINT");
-}
 main()
-  .then((res) => {
-    // console.log("connection successfull");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => console.log(err));
 
-
+async function main() {
+  console.log(process.env.ATLASDB_URL);
+  await mongoose.connect(process.env.ATLASDB_URL);
+}
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:listing_id/reviews", reviewsRouter);
