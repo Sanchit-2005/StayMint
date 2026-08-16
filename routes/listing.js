@@ -6,7 +6,10 @@ const listingController = require("../controllers/listings");
 const { isLoggin } = require("../middleware.js");
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
-const Listing=require("../models/listing.js")
+const Listing=require("../models/listing.js");
+const Booking=require("../models/booking.js");
+const{createOrder,verifyPayment,getUserBookings}=require("../controllers/paymentsTracking.js");
+
 
 const upload = multer({ storage });
 
@@ -52,7 +55,16 @@ router.get("/search", async (req, res) => {
 
 //*for getting a booking page for a listing
 router.get("/book/:id", isLoggin, asyncWrap(listingController.renderBookingPage));
-router.post("/book/:id",isLoggin,asyncWrap(listingController.addBooking));
+router.post("/:id/payments",isLoggin,asyncWrap(createOrder));
+
+router.post(
+  "/verify-payment",
+  isLoggin,
+  asyncWrap(verifyPayment)
+);
+
+//*for getting all the bookings of a user
+router.get("/mybookings", isLoggin, asyncWrap(getUserBookings));
 //*update route- will update the info of hotel which is listed
 router.get(
   "/edit/:id",
