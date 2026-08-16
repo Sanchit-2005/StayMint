@@ -1,12 +1,39 @@
 <% layout("/layout/boilerplate") -%>
+
 <body>
-   <% for(let booking of bookings) { %>
-     <div class="mt-3">
-       <h3>Hotel Name :<%= booking.listing.title %></h3>
-       <p>Check-in: <%= booking.checkInDate %></p>
-       <p>Check-out: <%= booking.checkOutDate %></p>
-       <p>Payment Status: <%= booking.paymentStatus %></p>
-       <hr>
-     </div>
-   <% } %>
+    <%   if(bookings.length===0){ %>
+        <div class="alert alert-danger" role="alert">
+          You have no bookings yet. 
+        </div>
+      <% } %>
+  <div class="col-12 offset-2 mt-5">
+    <% if(bookings.length > 0) { %>
+    <h4>All Bookings</h4>
+    <% } %>
+    <br />
+        
+    <% for(let booking of bookings) { %>
+
+      <div class="card booking_card">
+        <div class="card-body">
+          <h5 class="card-title" style="color: #007bff;">
+            <%= booking.listing.title %>
+          </h5>
+
+          <p class="card-text">
+            Check-in: <%= booking.checkInDate.toDateString() %>
+          </p>
+
+          <p class="card-text">
+            Check-out: <%= booking.checkOutDate.toDateString() %>
+          </p>
+
+          <p class="card-text" >
+            Payment Status: <span style="color: green; font-weight: bold;"><%= booking.paymentStatus %></span>
+          </p>
+        </div>
+      </div>
+
+    <% } %>
+  </div>
 </body>

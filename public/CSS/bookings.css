@@ -1,0 +1,177 @@
+.booking_card {
+  width: 70%;
+  margin-bottom: 2rem;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  padding: 1rem;
+}
+
+.booking_card .card-body {
+  padding: 1.5rem;
+}
+
+.booking_card .card-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.booking_card .card-text {
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+
+
+
+/* booking form  styling  */
+
+.booking-page {
+  min-height: 75vh;
+  background: #f7f7f7;
+  padding: 4rem 1rem;
+}
+
+.booking-container {
+  max-width: 850px;
+  margin: auto;
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.booking-label {
+  color: #1b4ef5;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+}
+
+.booking-header h1 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+}
+
+.booking-header p {
+  color: #777;
+}
+
+.booking-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.listing-info {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.listing-info h2 {
+  margin-bottom: 1rem;
+}
+
+.booking-for {
+  color: #666;
+}
+
+.booking-for i {
+  margin-right: 8px;
+  color: #1b4ef5;
+}
+
+.price {
+  font-size: 1.7rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+
+.price span {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #777;
+}
+
+.date-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.date-field {
+  flex: 1;
+}
+
+.date-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.date-field label i {
+  color: #1b4ef5;
+  margin-right: 6px;
+}
+
+.date-field input {
+  width: 100%;
+  padding: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.date-field input:focus {
+  outline: none;
+  border-color: #1b4ef5;
+  box-shadow: 0 0 0 3px rgba(27, 78, 245, 0.1);
+}
+
+.book-btn {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #1b4ef5;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.book-btn:hover {
+  background: #123ed0;
+}
+
+.book-btn i {
+  margin-left: 8px;
+}
+
+.secure-booking {
+  text-align: center;
+  color: #777;
+  margin-top: 1.5rem;
+}
+
+.secure-booking i {
+  color: #1b4ef5;
+  margin-right: 5px;
+}
+
+@media (max-width: 600px) {
+  .booking-card {
+    padding: 1.5rem;
+  }
+
+  .date-row {
+    flex-direction: column;
+  }
+
+  .booking-header h1 {
+    font-size: 2rem;
+  }
+}
