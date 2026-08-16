@@ -59,6 +59,11 @@ const ListingSchema = new Schema({
     ],
     default: "Trending",
   },
+  bookings:{
+    type:Schema.Types.ObjectId,
+    ref:"Booking"
+  }
+
 });
 
 ListingSchema.post("findOneAndDelete", async (listing) => {

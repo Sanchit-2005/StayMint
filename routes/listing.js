@@ -49,6 +49,10 @@ router.get("/search", async (req, res) => {
   res.render("listings/index.ejs", { listingInfo: listings });
 });
 
+
+//*for getting a booking page for a listing
+router.get("/book/:id", isLoggin, asyncWrap(listingController.renderBookingPage));
+router.post("/book/:id",isLoggin,asyncWrap(listingController.addBooking));
 //*update route- will update the info of hotel which is listed
 router.get(
   "/edit/:id",

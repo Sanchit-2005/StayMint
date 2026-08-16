@@ -25,6 +25,10 @@
             <%=listedgData.country %>
           </p>
         </div>
+        <form action="/listings/book/<%=listedgData.id%>">
+             <button>Book Now</button>
+        </form>
+        
       </div>
 
       <% if(currUser&&currUser.equals(listedgData.owner)){ %>

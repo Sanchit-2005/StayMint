@@ -1,0 +1,25 @@
+<% layout("/layout/boilerplate") -%>
+<body>
+  <h1>Booking Page</h1>
+  <br />
+  <p>
+    <b><%=listingData.title %></b>
+  </p>
+
+  <p>Booking For : <%=listingData.owner.email%></p>
+  <form action="/listings/book/<%=listingData._id%>" method="POST">
+    <p>Check in Date</p>
+    <input type="date" placeholder="Check in Date" name="bookings[checkInDate]" />
+    <br />
+    <br />
+
+    <p>Check out Date</p>
+    <input type="date" placeholder="Check out Date" name="bookings[checkOutDate]"/>
+
+    <h3 class="mt-3">
+      Price :
+      <%=listingData.price %>
+    </h3>
+    <button class="btn btn-success mb-3">Book Now</button>
+  </form>
+</body>

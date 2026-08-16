@@ -93,6 +93,11 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:listing_id/reviews", reviewsRouter);
 app.use("/", userRouter);
 
+
+app.get("/listings/book", (req, res) => {
+  res.send("booked the listing");
+});
+
 // //* if we reach to wrong route
 app.all("/{*splat}", (req, res, next) => {
   next(new ExpressError(404, "Page not found"));

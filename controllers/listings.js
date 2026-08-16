@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const Booking = require("../models/booking");
 
 module.exports.index = async (req, res) => {
   let category = req.query.category;
@@ -81,4 +82,29 @@ module.exports.destroyListing = async (req, res) => {
 
   req.flash("success", "deleted  the listing");
   res.redirect("/listings");
+};
+
+module.exports.renderBookingPage = async (req, res) => {
+  const { id } = req.params;
+  let listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("fail", "cannot found the listing");
+    return res.redirect("/listings");
+  }
+  let listingData = await listing.populate("owner");
+  res.render("listings/booking", { listingData });
+};
+
+module.exports.addBooking = async (req, res) => {
+  const { id } = req.params;
+  const listing = await Listing.findById(id);
+  const book = req.body.bookings;
+  let newBooking = new Booking({...book,
+    listing: listing._id,
+    user: req.user._id,});
+    newBooking.paymentStatus="completed";
+  await newBooking.save();
+
+  req.flash("success", "Booking Completed");
+  res.redirect(`/listings/${id}`);
 };
