@@ -3,13 +3,13 @@
 <body>
   <div class="row mb-3 mt-3 ">
     <div class="col-8 offset-2">
-      <h2 class="offset-1"><%=listedgData.title%></h2>
+      <h2 class="offset-2"><%=listedgData.title%> &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i
+      class="<%= isFavorite ? 'fa-solid' : 'fa-regular' %> fa-heart"
+      style="color: rgb(208, 30, 30); font-size: 30px; cursor: pointer;"
+      onclick="favorateListing('<%= listedgData.id %>', this)"
+    ></i></h2>
       
-  <i
-  class="<%= isFavorite ? 'fa-solid' : 'fa-regular' %> fa-heart"
-  style="color: rgb(208, 30, 30); font-size: 30px; cursor: pointer;"
-  onclick="favorateListing('<%= listedgData.id %>', this)"
-></i>
+
       
       
       <div class="card show-hotel col-8 offset-2">
