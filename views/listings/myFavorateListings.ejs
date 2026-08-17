@@ -1,0 +1,31 @@
+<% layout("/layout/boilerplate") -%>
+<body>
+    <h1>Your Favorate Listings</h1>
+    <div
+    class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 row-cols-xsm-1 g-4 mt-3"
+    id="box"
+  >
+  
+    <% for(fav of favorateListings) { %>
+        <div class="card col card-listing">
+            <img src="<%= fav.image.url %>" class="card-img-top" alt="">
+            <div class="card-body">
+                <h5 class="card-title"><%= fav.title %></h5>
+                
+                <a href="/listings/<%= fav._id %>" class="btn btn-primary">View Details</a>
+            </div>
+        </div>
+    <% } %>
+    </div>
+
+</body>
+
+
+<style>
+    .card-listing .card-img-top {
+  width: 300px !important;
+  height: 300px !important;
+  object-fit: cover;
+  border-radius: 10px;
+}
+</style>

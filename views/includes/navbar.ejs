@@ -72,6 +72,9 @@
         <li class="nav-item">
           <a class="nav-link" href="/listings/mybookings"> <i class="fa-solid fa-receipt" style="color: rgb(99, 230, 190);font-size: 20px;"></i>Show my Bookings </a>
         </li>
+         <li class="nav-item">
+          <a class="nav-link" href="/listings/showMyFavorate"> <i class="fa-solid fa-star" style="color: rgb(208, 30, 30);"></i>My Favorate </a>
+        </li>
         <% if (!currUser) { %>
         <li class="nav-item">
           <a class="nav-link" href="/signup"
@@ -85,6 +88,7 @@
 
         <% if (currUser) { %>
         <li class="nav-item">
+          <i><%= %></i>
           <a class="nav-link" href="/logout"
             >Logout <i class="fa-solid fa-right-from-bracket"></i
           ></a>

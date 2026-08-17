@@ -1,5 +1,6 @@
 const Listing = require("../models/listing");
 const Booking = require("../models/booking");
+const User = require("../models/user");
 
 module.exports.index = async (req, res) => {
   let category = req.query.category;
@@ -31,8 +32,15 @@ module.exports.showListing = async (req, res) => {
     req.flash("fail", "cannot found the listing");
     return res.redirect("/listings");
   }
+  let isFavorite = false;
+
+if (req.user) {
+  isFavorite = req.user.favaorateListings.some((favId) =>
+    favId.equals(listedgData._id)
+  );
+}
   // console.log(listedgData);
-  res.render("listings/show", { listedgData });
+  res.render("listings/show", { listedgData,isFavorite });
 };
 
 module.exports.addNewListing = async (req, res, next) => {
@@ -99,12 +107,37 @@ module.exports.addBooking = async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
   const book = req.body.bookings;
-  let newBooking = new Booking({...book,
+  let newBooking = new Booking({
+    ...book,
     listing: listing._id,
-    user: req.user._id,});
-    newBooking.paymentStatus="completed";
+    user: req.user._id,
+  });
+  newBooking.paymentStatus = "completed";
   await newBooking.save();
 
   req.flash("success", "Booking Completed");
   res.redirect(`/listings/${id}`);
+};
+
+module.exports.favorateListing = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(req.user._id);
+  const listing = await Listing.findById(id);
+  const index = user.favaorateListings.indexOf(listing._id);
+  if (index === -1) {
+    user.favaorateListings.push(listing._id);
+    await user.save();
+    return res.json({ message: "Added to favorate" });
+  } else {
+    user.favaorateListings.splice(index, 1);
+    await user.save();
+    return res.json({ message: "Removed from favorate" });
+  }
+};
+
+
+module.exports.showMyFavorateListings = async (req, res) => {
+  const user = await User.findById(req.user._id).populate("favaorateListings");
+  const favorateListings = user.favaorateListings;
+  res.render("listings/myFavorateListings", { favorateListings });
 };

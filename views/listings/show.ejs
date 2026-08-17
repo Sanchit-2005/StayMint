@@ -4,6 +4,14 @@
   <div class="row mb-3 mt-3 ">
     <div class="col-8 offset-2">
       <h2 class="offset-1"><%=listedgData.title%></h2>
+      
+  <i
+  class="<%= isFavorite ? 'fa-solid' : 'fa-regular' %> fa-heart"
+  style="color: rgb(208, 30, 30); font-size: 30px; cursor: pointer;"
+  onclick="favorateListing('<%= listedgData.id %>', this)"
+></i>
+      
+      
       <div class="card show-hotel col-8 offset-2">
         <img
           src="<%=listedgData.image.url%>"
@@ -139,38 +147,35 @@
 
   </div>
 
-  <script>
-    // This is an example script, please modify as needed
-    const rangeInput = document.getElementById("rating");
-    const rangeOutput = document.getElementById("rangeValue");
+ 
+</body>
 
-    // Set initial value
-    rangeOutput.textContent = rangeInput.value;
 
-    rangeInput.addEventListener("input", function () {
-      rangeOutput.textContent = this.value;
+ <script>
+  async function favorateListing(listingId, heart) {
+
+    const response = await fetch(`/listings/favorate/${listingId}`, {
+      method: "POST",
     });
 
-    const deleteForm = document.getElementById("delete-form");
+    const data = await response.json();
 
-    deleteForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+    
+
+    if (response.ok) {
+
+      if (heart.classList.contains("fa-regular")) {
+        heart.classList.remove("fa-regular");
+        heart.classList.add("fa-solid");
+      } else {
+        heart.classList.remove("fa-solid");
+        heart.classList.add("fa-regular");
+      }
 
       Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to recover this listing!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Yes, delete it!",
-      })
-
-        .then((result) => {
-          if (result.isConfirmed) {
-            deleteForm.submit();
-          }
-        });
-    });
-  </script>
-</body>
+        icon: "success",
+        text: data.message
+      });
+    }
+  }
+</script>

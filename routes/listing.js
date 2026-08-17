@@ -65,6 +65,16 @@ router.post(
 
 //*for getting all the bookings of a user
 router.get("/mybookings", isLoggin, asyncWrap(getUserBookings));
+
+
+//*for  adding favorating a listing by a user
+router.post("/favorate/:id", isLoggin, asyncWrap(listingController.favorateListing));
+
+//* for showing all the favorated listings of a user
+router.get("/showMyFavorate", isLoggin, asyncWrap(listingController.showMyFavorateListings));
+
+
+
 //*update route- will update the info of hotel which is listed
 router.get(
   "/edit/:id",

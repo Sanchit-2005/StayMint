@@ -66,11 +66,12 @@
         <p>Tiny House</p>
       </a>
     </div>
-    
+
     <div class="filter">
-      <a href="/listings?category=Amazing Pool">  <i class="fa-solid fa-person-swimming"></i>
-      <p>Amazing Pool</p></a>
-    
+      <a href="/listings?category=Amazing Pool">
+        <i class="fa-solid fa-person-swimming"></i>
+        <p>Amazing Pool</p></a
+      >
     </div>
     <div class="filter">
       <a href="/listings?category=Top of world"
@@ -99,6 +100,7 @@
         <div class="card-body">
           <p class="card-text">
             <b><%= list.title %> </b>
+
             <br />
             &#8377;<%= list.price.toLocaleString("en-IN") %>/night
           </p>
@@ -112,3 +114,10 @@
     <% } %>
   </div>
 </body>
+
+<style>
+  .card-body {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
