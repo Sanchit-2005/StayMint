@@ -21,9 +21,6 @@
   margin-bottom: 1.2rem;
 }
 
-
-
-
 /* booking form  styling  */
 
 .booking-page {
@@ -173,5 +170,37 @@
 
   .booking-header h1 {
     font-size: 2rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 900px) {
+  .booking-container {
+    padding: 0 1rem;
+  }
+  .booking-card {
+    padding: 2rem;
+  }
+  .date-row {
+    gap: 1rem;
+  }
+  .booking-header h1 {
+    font-size: 2.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking_card {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .booking-header h1 {
+    font-size: 1.6rem;
+  }
+  .date-row {
+    flex-direction: column;
+  }
+  .book-btn {
+    padding: 0.9rem;
   }
 }

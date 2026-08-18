@@ -1,128 +1,174 @@
 html,
 body {
-    height: 100%;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-      font-family: "Plus Jakarta Sans", sans-serif !important;
-  font-optical-sizing: auto  !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-optical-sizing: auto !important;
 
   font-style: normal !important;
-  
 }
 
 main {
-    flex: 1;
+  flex: 1;
 }
 
-
-
-
-
-.navbar{
-  
-    background-color: white;
+.navbar {
+  background-color: white;
 }
-.fa-files-pinwheel{
-    color:#1B4EF5;
-    font-size: 2rem;
+.fa-files-pinwheel {
+  color: #1b4ef5;
+  font-size: 2rem;
 }
-.nav-link{
-    color: #222222 !important;
-    font-weight: 600 !important;
+.nav-link {
+  color: #222222 !important;
+  font-weight: 600 !important;
 }
 
- /* Footer stayling */
+/* Footer stayling */
 
- .f-info{
-    background-color: azure ;
-    height: 8rem;
-    display:flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
+.f-info {
+  background-color: azure;
+  height: 8rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
 
- }
+.f-info-social,
+.company,
+.f-info-links {
+  width: 100%;
+  text-align: center;
+}
 
- .f-info-social,.company,.f-info-links{
-    width: 100%;
-    text-align: center;
- }
-
-.f-info-social i{
+.f-info-social i {
   font-size: 1.2rem;
   margin-right: 0.5rem;
 }
 
-.f-info-links a{
-   text-decoration: none;
+.f-info-links a {
+  text-decoration: none;
 }
 
-.f-info-links a:hover{
-   text-decoration:underline;
+.f-info-links a:hover {
+  text-decoration: underline;
 }
 
-
-    .edit{
-        margin-top:10rem;
-        
-    }
-
-
-    /* card styling */
-
-    .card{
-        border: none  !important ;
-      display: flex !important;
-      flex-wrap: wrap !important;
-      justify-content:space-around !important;
-        margin-bottom: 2rem !important;
-    }
-
-    .card-listing .card-img-top{
-        border-radius: 1rem !important;
-        width: 100% !important;
-    }
-        .card-listing .card-img-top:hover{
-            background-color: white;
-            opacity: 0.2;
-        }
-
-    #box{
-        margin-left: 5rem;
-    }
-
-    .card-text p{
-        font-weight: 400 !important;
-    } 
-
-
-    .listing-link{
-        text-decoration: none;
-    }
-
-
-    /* show route styling */
-     .show-hotel .card-img-top{
-        height: 40vh;
-        object-fit: cover;
-         border-radius: 1rem !important;
-     }
-.show-hotel{
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 1rem;
+.edit {
+  margin-top: 10rem;
 }
 
+/* card styling */
+
+.card {
+  border: none !important ;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-around !important;
+  margin-bottom: 2rem !important;
+}
+
+.card-listing .card-img-top {
+  border-radius: 1rem !important;
+  width: 100% !important;
+}
+.card-listing .card-img-top:hover {
+  background-color: white;
+  opacity: 0.2;
+}
+
+#box {
+  margin-left: 5rem;
+}
+
+.card-text p {
+  font-weight: 400 !important;
+}
+
+.listing-link {
+  text-decoration: none;
+}
+
+/* show route styling */
+.show-hotel .card-img-top {
+  height: 40vh;
+  object-fit: cover;
+  border-radius: 1rem !important;
+}
+.show-hotel {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 1rem;
+}
 
 .review-card {
-      border: 1px solid #dee2e6;
-    border-radius: 12px;
-    padding: 25px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 25px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Responsive rules - do not change desktop look, only adjust smaller viewports */
+@media (max-width: 1024px) {
+  #box {
+    margin-left: 2rem;
+  }
+  .card {
+    justify-content: center;
+  }
+  .show-hotel .card-img-top {
+    height: 50vh;
+  }
+}
+
+@media (max-width: 768px) {
+  #box {
+    margin-left: 0;
+  }
+  .card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .card-listing .card-img-top {
+    width: 100% !important;
+  }
+  .nav-link {
+    font-size: 0.95rem !important;
+  }
+  .review-card {
+    padding: 18px;
+  }
+  .show-hotel .card-img-top {
+    height: 35vh;
+  }
+  .f-info {
+    height: auto;
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link {
+    font-size: 0.9rem !important;
+  }
+  .fa-files-pinwheel {
+    font-size: 1.6rem;
+  }
+  .card {
+    margin: 1rem !important;
+  }
+  .review-card {
+    padding: 16px;
+  }
+  .show-hotel .card-img-top {
+    height: 30vh;
+  }
+}

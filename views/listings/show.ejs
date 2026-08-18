@@ -2,8 +2,8 @@
 
 <body>
   <div class="row mb-3 mt-3 ">
-    <div class="col-8 offset-2">
-      <h2 class="offset-2"><%=listedgData.title%> &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i
+    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+      <h2 class="d-flex justify-content-between align-items-center flex-wrap"><%=listedgData.title%> <i
       class="<%= isFavorite ? 'fa-solid' : 'fa-regular' %> fa-heart"
       style="color: rgb(208, 30, 30); font-size: 30px; cursor: pointer;"
       onclick="favorateListing('<%= listedgData.id %>', this)"
@@ -12,7 +12,7 @@
 
       
       
-      <div class="card show-hotel col-8 offset-2">
+      <div class="card show-hotel">
         <img
           src="<%=listedgData.image.url%>"
           class="card-img-top show-img"
@@ -41,17 +41,16 @@
 
       <% if(currUser&&currUser.equals(listedgData.owner)){ %>
 
-      <div class="btns mb-3">
+      <div class="btns mb-3 d-flex flex-wrap gap-2">
         <form action="/listings/edit/<%=listedgData.id%>" method="GET">
-          <button type="submit" class="btn btn-success offset-2">Edit</button>
+          <button type="submit" class="btn btn-success">Edit</button>
         </form>
-        <br />
         <form
           id="delete-form"
           action="/listings/<%=listedgData.id%>?_method=DELETE"
           method="POST"
         >
-          <button type="submit" class="btn btn-danger offset-2">
+          <button type="submit" class="btn btn-danger">
             Delete this listing
           </button>
         </form>
@@ -62,7 +61,7 @@
 
     <% if(currUser) {%>
     <!-- reviews  form  -->
-    <div class="col-8 offset-3 mt-5">
+    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
       <h4>Write a review</h4>
       <form
         action="/listings/<%=listedgData.id%>/reviews/"
@@ -112,13 +111,13 @@
 
 
     <!-- showing the reviews -->
-    <div class="col-8 offset-3 mt-5">
+    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
     <h4>All Reviews</h4>
 <br>
     <div class="row">
         <% for(let review of listedgData.reviews){ %>
 
-        <div class="col-6 mb-3">
+        <div class="col-12 col-sm-6 mb-3">
             <div class="card h-100 review-card">
                 <div class="card-body">
                     <h5 class="card-title">@<%=review.reviewAuthor.username %></h5>
