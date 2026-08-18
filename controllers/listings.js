@@ -107,6 +107,7 @@ module.exports.addBooking = async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
   const book = req.body.bookings;
+  
   let newBooking = new Booking({
     ...book,
     listing: listing._id,

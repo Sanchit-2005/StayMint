@@ -2,7 +2,6 @@
 <body>
   <div class="booking-page">
     <div class="booking-container">
-
       <div class="booking-header">
         <span class="booking-label">STAYMINT</span>
         <h1>Booking Page</h1>
@@ -10,13 +9,13 @@
       </div>
 
       <div class="booking-card">
-
         <div class="listing-info">
           <h2><%= listingData.title %></h2>
 
           <p class="booking-for">
             <i class="fa-solid fa-user"></i>
-            Booking for: <%= listingData.owner.email %>
+            Booking for:
+            <%= listingData.owner.email %>
           </p>
 
           <div class="price">
@@ -26,9 +25,7 @@
         </div>
 
         <form id="bookingForm">
-
           <div class="date-row">
-
             <div class="date-field">
               <label for="checkInDate">
                 <i class="fa-regular fa-calendar"></i>
@@ -56,23 +53,19 @@
                 required
               />
             </div>
-
           </div>
 
           <button type="submit" class="book-btn">
             Book Now
             <i class="fa-solid fa-arrow-right"></i>
           </button>
-
         </form>
-
       </div>
 
       <p class="secure-booking">
         <i class="fa-solid fa-shield-halved"></i>
         Your booking information is secure.
       </p>
-
     </div>
   </div>
 </body>
@@ -92,10 +85,27 @@
         "/listings/<%= listingData._id %>/payments",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            checkInDate: checkInDate,
+            checkOutDate: checkOutDate,
+          }),
         },
       );
 
       const order = await response.json();
+
+      if (!order.success) {
+  Swal.fire({
+    icon: "error",
+    title: "Already Booked",
+    text: order.message,
+  });
+
+  return;
+}
 
       // 2. Open Razorpay Checkout
       const options = {
@@ -140,6 +150,15 @@
             alert("Payment verification failed");
           }
         },
+          modal: {
+    ondismiss: function () {
+      Swal.fire({
+        icon: "warning",
+        title: "Payment Cancelled",
+        text: "You cancelled the payment. Your booking was not completed.",
+      });
+    },
+  },
       };
 
       const razorpay = new Razorpay(options);

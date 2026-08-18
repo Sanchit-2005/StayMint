@@ -14,13 +14,26 @@ const razorpay = new Razorpay({
 // Route to create a Razorpay order
 module.exports.createOrder = async (req, res) => {
   const { id } = req.params;
+   const { checkInDate, checkOutDate } = req.body;
   let listing = await Listing.findById(id);
   if (!listing) {
-  return res.status(404).json({
-    success: false,
-    message: "Listing not found",
+    return res.status(404).json({
+      success: false,
+      message: "Listing not found",
+    });
+  }
+    const existingBooking = await Booking.findOne({
+    listing: listing._id,
+    checkInDate: { $lt: new Date(checkOutDate) },
+    checkOutDate: { $gt: new Date(checkInDate) },
   });
-}
+
+  if (existingBooking) {
+    return res.status(400).json({
+      success: false,
+      message: "This hotel is already booked for the selected dates.",
+    });
+  }
   const amount = listing.price;
 
   const options = {
@@ -32,6 +45,7 @@ module.exports.createOrder = async (req, res) => {
   try {
     const order = await razorpay.orders.create(options);
     res.json({
+        success: true,
       key: process.env.GATEWAY_API_KEY,
 
       // Send key to the frontend
@@ -45,10 +59,14 @@ module.exports.createOrder = async (req, res) => {
 };
 
 module.exports.verifyPayment = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature,listingId,
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    listingId,
     checkInDate,
-    checkOutDate } =
-    req.body;
+    checkOutDate,
+  } = req.body;
 
   const key_secret = process.env.GATEWAY_API_SECRET;
 
@@ -57,14 +75,27 @@ module.exports.verifyPayment = async (req, res) => {
     .update(razorpay_order_id + "|" + razorpay_payment_id)
     .digest("hex");
 
+  const existingBooking = await Booking.findOne({
+    listing: listingId,
+
+    checkInDate: new Date(checkInDate),
+    checkOutDate: new Date(checkOutDate),
+  });
+  if (existingBooking) {
+    return res.status(400).json({
+      success: false,
+      message: "This hotel is already booked for the selected dates.",
+    });
+  }
   if (generated_signature === razorpay_signature) {
     const newBooking = new Booking({
       listing: listingId,
       user: req.user._id,
-        checkInDate: new Date(checkInDate),
-        checkOutDate: new Date(checkOutDate),
-        paymentStatus: "completed",
+      checkInDate: new Date(checkInDate),
+      checkOutDate: new Date(checkOutDate),
+      paymentStatus: "completed",
     });
+
     await newBooking.save();
     req.flash("success", "Payment successful");
 
@@ -81,7 +112,6 @@ module.exports.verifyPayment = async (req, res) => {
   });
 };
 
-
 module.exports.getUserBookings = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -92,5 +122,5 @@ module.exports.getUserBookings = async (req, res) => {
     console.error("Error fetching user bookings:", error);
     req.flash("error", "Failed to fetch bookings");
     res.redirect("/listings");
-  }}   
-
+  }
+};
