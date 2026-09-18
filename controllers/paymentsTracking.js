@@ -15,6 +15,7 @@ const razorpay = new Razorpay({
 module.exports.createOrder = async (req, res) => {
   const { id } = req.params;
    const { checkInDate, checkOutDate } = req.body;
+   let differenceInDays = (new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24);
   let listing = await Listing.findById(id);
   if (!listing) {
     return res.status(404).json({
@@ -34,7 +35,7 @@ module.exports.createOrder = async (req, res) => {
       message: "This hotel is already booked for the selected dates.",
     });
   }
-  const amount = listing.price;
+  const amount = listing.price * differenceInDays; // Amount in INR (Razorpay works with the smallest currency unit, so multiply by 100 for paise)
 
   const options = {
     amount: amount * 100, // Convert amount to paise

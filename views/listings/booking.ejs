@@ -54,6 +54,10 @@
               />
             </div>
           </div>
+          <div class="total-price">
+            <span>Total Price:</span>
+            <span id="totalPrice">₹0</span>
+          </div>
 
           <button type="submit" class="book-btn">
             Book Now
@@ -71,6 +75,49 @@
 </body>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  const checkInInput = document.getElementById("checkInDate");
+  const checkOutInput = document.getElementById("checkOutDate");
+  const totalPriceElement = document.getElementById("totalPrice");
+
+  const pricePerNight = <%= listingData.price %>;
+
+  // Calculate and display total price
+  function updateTotalPrice() {
+    const checkInDate = checkInInput.value;
+    const checkOutDate = checkOutInput.value;
+
+    if (!checkInDate || !checkOutDate) {
+      totalPriceElement.textContent = "₹0";
+      return;
+    }
+
+    const daysDiff =
+      (new Date(checkOutDate) - new Date(checkInDate)) /
+      (1000 * 60 * 60 * 24);
+
+    if (daysDiff <= 0) {
+      totalPriceElement.textContent = "₹0";
+      return;
+    }
+
+    const totalPrice = daysDiff * pricePerNight;
+
+    totalPriceElement.textContent =
+      `₹${totalPrice.toLocaleString("en-IN")}`;
+  }
+
+  
+checkInInput.addEventListener("change", function () {
+ 
+  checkOutInput.min = checkInInput.value;
+
+  
+  checkOutInput.value = "";
+
+  updateTotalPrice();
+});
+  checkOutInput.addEventListener("change", updateTotalPrice);
+
   document
     .getElementById("bookingForm")
     .addEventListener("submit", async function (e) {
