@@ -37,6 +37,7 @@
                 id="checkInDate"
                 name="bookings[checkInDate]"
                 required
+                min="<%= new Date().toISOString().split('T')[0] %>"
               />
             </div>
 
