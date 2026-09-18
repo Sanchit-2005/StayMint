@@ -8,7 +8,7 @@ const userSchema = new Schema({
     required: true,
   },
 
-  favaorateListings: [
+  favoriteListings: [
     {
       type: Schema.Types.ObjectId,
       ref: "Listing",

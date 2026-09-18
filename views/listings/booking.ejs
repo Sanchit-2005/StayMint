@@ -1,216 +1,209 @@
 <% layout("/layout/boilerplate") -%>
-<body>
-  <div class="booking-page">
-    <div class="booking-container">
-      <div class="booking-header">
-        <span class="booking-label">STAYMINT</span>
-        <h1>Booking Page</h1>
-        <p>Complete your details to reserve your stay.</p>
-      </div>
 
-      <div class="booking-card">
-        <div class="listing-info">
-          <h2><%= listingData.title %></h2>
-
-          <p class="booking-for">
-            <i class="fa-solid fa-user"></i>
-            Booking for:
-            <%= listingData.owner.email %>
-          </p>
-
-          <div class="price">
-            ₹<%= listingData.price.toLocaleString("en-IN") %>
-            <span>/ night</span>
-          </div>
+  <body>
+    <div class="booking-page">
+      <div class="booking-container">
+        <div class="booking-header">
+          <span class="booking-label">STAYMINT</span>
+          <h1>Booking Page</h1>
+          <p>Complete your details to reserve your stay.</p>
         </div>
 
-        <form id="bookingForm">
-          <div class="date-row">
-            <div class="date-field">
-              <label for="checkInDate">
-                <i class="fa-regular fa-calendar"></i>
-                Check-in Date
-              </label>
+        <div class="booking-card">
+          <div class="listing-info">
+            <h2>
+              <%= listingData.title %>
+            </h2>
 
-              <input
-                type="date"
-                id="checkInDate"
-                name="bookings[checkInDate]"
-                required
-                min="<%= new Date().toISOString().split('T')[0] %>"
-              />
-            </div>
+            <p class="booking-for">
+              <i class="fa-solid fa-user"></i>
+              Booking for:
+              <%= listingData.owner.email %>
+            </p>
 
-            <div class="date-field">
-              <label for="checkOutDate">
-                <i class="fa-regular fa-calendar"></i>
-                Check-out Date
-              </label>
-
-              <input
-                type="date"
-                id="checkOutDate"
-                name="bookings[checkOutDate]"
-                required
-              />
+            <div class="price">
+              ₹<%= listingData.price.toLocaleString("en-IN") %>
+                <span>/ night</span>
             </div>
           </div>
-          <div class="total-price">
-            <span>Total Price:</span>
-            <span id="totalPrice">₹0</span>
-          </div>
 
-          <button type="submit" class="book-btn">
-            Book Now
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </form>
+          <form id="bookingForm">
+            <div class="date-row">
+              <div class="date-field">
+                <label for="checkInDate">
+                  <i class="fa-regular fa-calendar"></i>
+                  Check-in Date
+                  </label>
+
+                  <input type="date" id="checkInDate" name="bookings[checkInDate]" required
+                    min="<%= new Date().toISOString().split('T')[0] %>" />
+              </div>
+
+              <div class="date-field">
+                <label for="checkOutDate">
+                  <i class="fa-regular fa-calendar"></i>
+                  Check-out Date
+                </label>
+
+                <input type="date" id="checkOutDate" name="bookings[checkOutDate]" required />
+              </div>
+            </div>
+            <div class="total-price">
+              <span>Total Price:</span>
+              <span id="totalPrice">₹0</span>
+            </div>
+
+            <button type="submit" class="book-btn">
+              Book Now
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <p class="secure-booking">
+          <i class="fa-solid fa-shield-halved"></i>
+          Your booking information is secure.
+        </p>
       </div>
-
-      <p class="secure-booking">
-        <i class="fa-solid fa-shield-halved"></i>
-        Your booking information is secure.
-      </p>
     </div>
-  </div>
-</body>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  const checkInInput = document.getElementById("checkInDate");
-  const checkOutInput = document.getElementById("checkOutDate");
-  const totalPriceElement = document.getElementById("totalPrice");
+  </body>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    const checkInInput = document.getElementById("checkInDate");
+    const checkOutInput = document.getElementById("checkOutDate");
+    const totalPriceElement = document.getElementById("totalPrice");
 
-  const pricePerNight = <%= listingData.price %>;
+    const pricePerNight = <%= listingData.price %>;
 
-  // Calculate and display total price
-  function updateTotalPrice() {
-    const checkInDate = checkInInput.value;
-    const checkOutDate = checkOutInput.value;
+    // Calculate and display total price
+    function updateTotalPrice() {
+      const checkInDate = checkInInput.value;
+      const checkOutDate = checkOutInput.value;
 
-    if (!checkInDate || !checkOutDate) {
-      totalPriceElement.textContent = "₹0";
-      return;
+      if (!checkInDate || !checkOutDate) {
+        totalPriceElement.textContent = "₹0";
+        return;
+      }
+
+      const daysDiff =
+        (new Date(checkOutDate) - new Date(checkInDate)) /
+        (1000 * 60 * 60 * 24);
+
+      if (daysDiff <= 0) {
+        totalPriceElement.textContent = "₹0";
+        return;
+      }
+
+      const totalPrice = daysDiff * pricePerNight;
+
+      totalPriceElement.textContent =
+        `₹${totalPrice.toLocaleString("en-IN")}`;
     }
 
-    const daysDiff =
-      (new Date(checkOutDate) - new Date(checkInDate)) /
-      (1000 * 60 * 60 * 24);
 
-    if (daysDiff <= 0) {
-      totalPriceElement.textContent = "₹0";
-      return;
-    }
+    checkInInput.addEventListener("change", function () {
 
-    const totalPrice = daysDiff * pricePerNight;
+      checkOutInput.min = checkInInput.value;
 
-    totalPriceElement.textContent =
-      `₹${totalPrice.toLocaleString("en-IN")}`;
-  }
 
-  
-checkInInput.addEventListener("change", function () {
- 
-  checkOutInput.min = checkInInput.value;
+      checkOutInput.value = "";
 
-  
-  checkOutInput.value = "";
+      updateTotalPrice();
+    });
+    checkOutInput.addEventListener("change", updateTotalPrice);
 
-  updateTotalPrice();
-});
-  checkOutInput.addEventListener("change", updateTotalPrice);
+    document
+      .getElementById("bookingForm")
+      .addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-  document
-    .getElementById("bookingForm")
-    .addEventListener("submit", async function (e) {
-      e.preventDefault();
+        const checkInDate = document.getElementById("checkInDate").value;
 
-      const checkInDate = document.getElementById("checkInDate").value;
+        const checkOutDate = document.getElementById("checkOutDate").value;
 
-      const checkOutDate = document.getElementById("checkOutDate").value;
-
-      // 1. Create Razorpay order
-      const response = await fetch(
-        "/listings/<%= listingData._id %>/payments",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            checkInDate: checkInDate,
-            checkOutDate: checkOutDate,
-          }),
-        },
-      );
-
-      const order = await response.json();
-
-      if (!order.success) {
-  Swal.fire({
-    icon: "error",
-    title: "Already Booked",
-    text: order.message,
-  });
-
-  return;
-}
-
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: order.key,
-        amount: order.amount,
-        currency: order.currency,
-        order_id: order.id,
-
-        name: "STAYMINT",
-        description: "Hotel Booking",
-
-        handler: async function (paymentResponse) {
-          // 3. Verify payment
-          const verifyResponse = await fetch("/listings/verify-payment", {
+        // 1. Create Razorpay order
+        const response = await fetch(
+          "/listings/<%= listingData._id %>/payments",
+          {
             method: "POST",
-
             headers: {
               "Content-Type": "application/json",
             },
-
             body: JSON.stringify({
-              razorpay_order_id: paymentResponse.razorpay_order_id,
-
-              razorpay_payment_id: paymentResponse.razorpay_payment_id,
-
-              razorpay_signature: paymentResponse.razorpay_signature,
-
-              listingId: "<%= listingData._id %>",
-
               checkInDate: checkInDate,
-
               checkOutDate: checkOutDate,
             }),
+          },
+        );
+
+        const order = await response.json();
+
+        if (!order.success) {
+          Swal.fire({
+            icon: "error",
+            title: "Already Booked",
+            text: order.message,
           });
 
-          const result = await verifyResponse.json();
+          return;
+        }
 
-          // 4. Payment + booking successful
-          if (result.success) {
-            window.location.href = "/listings/<%= listingData._id %>";
-          } else {
-            alert("Payment verification failed");
-          }
-        },
+        // 2. Open Razorpay Checkout
+        const options = {
+          key: order.key,
+          amount: order.amount,
+          currency: order.currency,
+          order_id: order.id,
+
+          name: "STAYMINT",
+          description: "Hotel Booking",
+
+          handler: async function (paymentResponse) {
+            // 3. Verify payment
+            const verifyResponse = await fetch("/listings/verify-payment", {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+              },
+
+              body: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+
+                razorpay_signature: paymentResponse.razorpay_signature,
+
+                listingId: "<%= listingData._id %>",
+
+                checkInDate: checkInDate,
+
+                checkOutDate: checkOutDate,
+              }),
+            });
+
+            const result = await verifyResponse.json();
+
+            // 4. Payment + booking successful
+            if (result.success) {
+              window.location.href = "/listings/<%= listingData._id %>";
+            } else {
+              alert("Payment verification failed");
+            }
+          },
           modal: {
-    ondismiss: function () {
-      Swal.fire({
-        icon: "warning",
-        title: "Payment Cancelled",
-        text: "You cancelled the payment. Your booking was not completed.",
+            ondismiss: function () {
+              Swal.fire({
+                icon: "warning",
+                title: "Payment Cancelled",
+                text: "You cancelled the payment. Your booking was not completed.",
+              });
+            },
+          },
+        };
+
+        const razorpay = new Razorpay(options);
+
+        razorpay.open();
       });
-    },
-  },
-      };
-
-      const razorpay = new Razorpay(options);
-
-      razorpay.open();
-    });
-</script>
+  </script>

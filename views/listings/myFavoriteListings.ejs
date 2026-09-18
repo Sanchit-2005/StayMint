@@ -1,12 +1,12 @@
 <% layout("/layout/boilerplate") -%>
 <body>
-    <h1>Your Favorate Listings</h1>
+    <h1>Your Favorite Listings</h1>
     <div
     class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3"
     id="box"
   >
   
-    <% for(fav of favorateListings) { %>
+    <% for(fav of favoriteListings) { %>
         <div class="card col card-listing">
             <img src="<%= fav.image.url %>" class="card-img-top" alt="">
             <div class="card-body">

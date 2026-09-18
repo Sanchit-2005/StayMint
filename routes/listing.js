@@ -68,10 +68,10 @@ router.get("/mybookings", isLoggin, asyncWrap(getUserBookings));
 
 
 //*for  adding favorating a listing by a user
-router.post("/favorate/:id", isLoggin, asyncWrap(listingController.favorateListing));
+router.post("/favorite/:id", isLoggin, asyncWrap(listingController.favoriteListing));
 
-//* for showing all the favorated listings of a user
-router.get("/showMyFavorate", isLoggin, asyncWrap(listingController.showMyFavorateListings));
+//* for showing all the favorited listings of a user
+router.get("/showMyFavorite", isLoggin, asyncWrap(listingController.showMyFavoriteListings));
 
 
 

@@ -35,7 +35,7 @@ module.exports.showListing = async (req, res) => {
   let isFavorite = false;
 
 if (req.user) {
-  isFavorite = req.user.favaorateListings.some((favId) =>
+  isFavorite = req.user.favoriteListings.some((favId) =>
     favId.equals(listedgData._id)
   );
 }
@@ -120,25 +120,25 @@ module.exports.addBooking = async (req, res) => {
   res.redirect(`/listings/${id}`);
 };
 
-module.exports.favorateListing = async (req, res) => {
+module.exports.favoriteListing = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(req.user._id);
   const listing = await Listing.findById(id);
-  const index = user.favaorateListings.indexOf(listing._id);
+  const index = user.favoriteListings.indexOf(listing._id);
   if (index === -1) {
-    user.favaorateListings.push(listing._id);
+    user.favoriteListings.push(listing._id);
     await user.save();
-    return res.json({ message: "Added to favorate" });
+    return res.json({ message: "Added to favorites" });
   } else {
-    user.favaorateListings.splice(index, 1);
+    user.favoriteListings.splice(index, 1);
     await user.save();
-    return res.json({ message: "Removed from favorate" });
+    return res.json({ message: "Removed from favorites" });
   }
 };
 
 
-module.exports.showMyFavorateListings = async (req, res) => {
-  const user = await User.findById(req.user._id).populate("favaorateListings");
-  const favorateListings = user.favaorateListings;
-  res.render("listings/myFavorateListings", { favorateListings });
+module.exports.showMyFavoriteListings = async (req, res) => {
+  const user = await User.findById(req.user._id).populate("favoriteListings");
+  const favoriteListings = user.favoriteListings;
+  res.render("listings/myFavoriteListings", { favoriteListings });
 };
