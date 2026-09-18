@@ -1,12 +1,27 @@
 <% layout("/layout/boilerplate") -%>
 <body>
     <h1>Your Favorite Listings</h1>
+    <% if (!favoriteListings || favoriteListings.length === 0) { %>
+    <div
+      class="alert alert-danger alert-dismissible fade show col-12 col-md-6 offset-md-3 mt-3"
+      role="alert"
+    >
+      <p>No favorite listings yet!</p>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% } else { %>
     <div
     class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3"
     id="box"
   >
   
     <% for(fav of favoriteListings) { %>
+
         <div class="card col card-listing">
             <img src="<%= fav.image.url %>" class="card-img-top" alt="">
             <div class="card-body">
@@ -17,6 +32,7 @@
         </div>
     <% } %>
     </div>
+    <% } %>
 
 </body>
 
